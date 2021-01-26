@@ -6,16 +6,19 @@ import com.smalaca.taskamanager.exception.UnsupportedToDoItemType;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Story;
 import com.smalaca.taskamanager.model.entities.Task;
+import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.model.interfaces.ToDoItem;
 import com.smalaca.taskamanager.registry.EventsRegistry;
 import com.smalaca.taskamanager.service.CommunicationService;
 import com.smalaca.taskamanager.service.ProjectBacklogService;
 import com.smalaca.taskamanager.service.SprintBacklogService;
 import com.smalaca.taskamanager.service.StoryService;
-import com.smalaca.taskamanager.todoitemstate.ToDoItemApprovedState;
-import com.smalaca.taskamanager.todoitemstate.ToDoItemReleasedState;
+import com.smalaca.taskamanager.todoitemstate.ToDoItemState;
+import com.smalaca.taskamanager.todoitemstate.ToDoItemStatesFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DONE;
 
@@ -26,6 +29,8 @@ public class ToDoItemProcessor {
     @Autowired private ProjectBacklogService projectBacklogService;
     @Autowired private CommunicationService communicationService;
     @Autowired private SprintBacklogService sprintBacklogService;
+
+    private Map<ToDoItemStatus, ToDoItemState> states;
 
     public ToDoItemProcessor() {}
 
@@ -40,6 +45,8 @@ public class ToDoItemProcessor {
     }
 
     public void processFor(ToDoItem toDoItem) {
+        initToDoItemStates();
+
         switch (toDoItem.getStatus()) {
             case DEFINED:
                 processDefined(toDoItem);
@@ -53,16 +60,15 @@ public class ToDoItemProcessor {
                 processDone(toDoItem);
                 break;
 
-            case APPROVED:
-                processApproved(toDoItem);
-                break;
-
-            case RELEASED:
-                processReleased(toDoItem);
-                break;
-
             default:
+                states.get(toDoItem.getStatus()).process(toDoItem);
                 break;
+        }
+    }
+
+    private void initToDoItemStates() {
+        if (states == null) {
+            states = new ToDoItemStatesFactory().getAll(storyService, eventsRegistry);
         }
     }
 
@@ -118,13 +124,5 @@ public class ToDoItemProcessor {
             event.setStoryId(story.getId());
             eventsRegistry.publish(event);
         }
-    }
-
-    private void processApproved(ToDoItem toDoItem) {
-        new ToDoItemApprovedState(storyService, eventsRegistry).process(toDoItem);
-    }
-
-    private void processReleased(ToDoItem toDoItem) {
-        new ToDoItemReleasedState(eventsRegistry).process(toDoItem);
     }
 }

@@ -4,10 +4,10 @@ import com.smalaca.taskamanager.events.ToDoItemReleasedEvent;
 import com.smalaca.taskamanager.model.interfaces.ToDoItem;
 import com.smalaca.taskamanager.registry.EventsRegistry;
 
-public class ToDoItemReleasedState implements ToDoItemState {
+class ToDoItemReleasedState implements ToDoItemState {
     private final EventsRegistry eventsRegistry;
 
-    public ToDoItemReleasedState(EventsRegistry eventsRegistry) {
+    ToDoItemReleasedState(EventsRegistry eventsRegistry) {
         this.eventsRegistry = eventsRegistry;
     }
 

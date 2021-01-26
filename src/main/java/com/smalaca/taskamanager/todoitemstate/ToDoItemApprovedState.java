@@ -8,11 +8,11 @@ import com.smalaca.taskamanager.model.interfaces.ToDoItem;
 import com.smalaca.taskamanager.registry.EventsRegistry;
 import com.smalaca.taskamanager.service.StoryService;
 
-public class ToDoItemApprovedState implements ToDoItemState {
+class ToDoItemApprovedState implements ToDoItemState {
     private final StoryService storyService;
     private final EventsRegistry eventsRegistry;
 
-    public ToDoItemApprovedState(StoryService storyService, EventsRegistry eventsRegistry) {
+    ToDoItemApprovedState(StoryService storyService, EventsRegistry eventsRegistry) {
         this.storyService = storyService;
         this.eventsRegistry = eventsRegistry;
     }
