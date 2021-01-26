@@ -8,7 +8,7 @@ public class TeamApplicationService {
     private final TeamRepository teamRepository;
     private final TeamFactory teamFactory;
 
-    public TeamApplicationService(TeamRepository teamRepository, TeamFactory teamFactory) {
+    TeamApplicationService(TeamRepository teamRepository, TeamFactory teamFactory) {
         this.teamRepository = teamRepository;
         this.teamFactory = teamFactory;
     }

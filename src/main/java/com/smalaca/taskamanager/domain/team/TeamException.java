@@ -5,7 +5,7 @@ public class TeamException extends RuntimeException{
         super(message);
     }
 
-    public static RuntimeException teamAlreadyExists(String name) {
+    static RuntimeException teamAlreadyExists(String name) {
         return new TeamException("Team with name: " + name + " already exists.");
     }
 }
