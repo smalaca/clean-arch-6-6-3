@@ -1,5 +1,8 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.application.productowner.ProductOwnerApplicationService;
+import com.smalaca.taskamanager.application.productowner.ProductOwnerApplicationServiceFactory;
+import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
 import com.smalaca.taskamanager.dto.ProductOwnerDto;
 import com.smalaca.taskamanager.exception.ProductOwnerNotFoundException;
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
@@ -32,10 +35,12 @@ import static java.util.stream.Collectors.toList;
 public class ProductOwnerController {
     private final ProductOwnerRepository productOwnerRepository;
     private final ProjectRepository projectRepository;
+    private final ProductOwnerApplicationService service;
 
     public ProductOwnerController(ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository) {
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
+        service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(productOwnerRepository);
     }
 
     @GetMapping("/{id}")
@@ -67,17 +72,14 @@ public class ProductOwnerController {
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody ProductOwnerDto dto, UriComponentsBuilder uriComponentsBuilder) {
-        if (productOwnerRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName()).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } else {
-            ProductOwner productOwner = new ProductOwner();
-            productOwner.setFirstName(dto.getFirstName());
-            productOwner.setLastName(dto.getLastName());
-            ProductOwner saved = productOwnerRepository.save(productOwner);
+        try {
+            Long id = service.create(dto.asNewProductOwnerDto());
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(uriComponentsBuilder.path("/product-owner/{id}").buildAndExpand(saved.getId()).toUri());
+            headers.setLocation(uriComponentsBuilder.path("/product-owner/{id}").buildAndExpand(id).toUri());
             return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        } catch (ProductOwnerException exception) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
