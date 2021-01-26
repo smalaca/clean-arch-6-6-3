@@ -1,6 +1,7 @@
 package com.smalaca.taskamanager.application.productowner;
 
-import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
+import com.smalaca.taskamanager.domain.productowner.NewProductOwnerDto;
+import com.smalaca.taskamanager.domain.productowner.ProductOwnerFactory;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
 import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 
@@ -12,15 +13,9 @@ public class ProductOwnerApplicationService {
     }
 
     public Long create(NewProductOwnerDto dto) {
-        if (productOwnerRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName()).isEmpty()) {
-            ProductOwner productOwner = new ProductOwner();
-            productOwner.setFirstName(dto.getFirstName());
-            productOwner.setLastName(dto.getLastName());
-            ProductOwner saved = productOwnerRepository.save(productOwner);
+        ProductOwner productOwner = new ProductOwnerFactory(productOwnerRepository).create(dto);
+        ProductOwner saved = productOwnerRepository.save(productOwner);
 
-            return saved.getId();
-        } else {
-            throw ProductOwnerException.productOwnerAlreadyExists(dto.getFirstName(), dto.getLastName());
-        }
+        return saved.getId();
     }
 }

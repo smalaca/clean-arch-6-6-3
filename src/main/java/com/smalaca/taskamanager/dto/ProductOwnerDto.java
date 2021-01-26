@@ -1,6 +1,6 @@
 package com.smalaca.taskamanager.dto;
 
-import com.smalaca.taskamanager.application.productowner.NewProductOwnerDto;
+import com.smalaca.taskamanager.domain.productowner.NewProductOwnerDto;
 
 import java.util.ArrayList;
 import java.util.List;

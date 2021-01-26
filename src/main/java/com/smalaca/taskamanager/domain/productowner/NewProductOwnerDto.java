@@ -1,4 +1,4 @@
-package com.smalaca.taskamanager.application.productowner;
+package com.smalaca.taskamanager.domain.productowner;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
