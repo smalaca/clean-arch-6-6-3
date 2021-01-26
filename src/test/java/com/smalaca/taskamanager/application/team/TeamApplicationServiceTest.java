@@ -29,16 +29,16 @@ class TeamApplicationServiceTest {
         Long id = service.create(TEAM_NAME);
 
         assertThat(id).isEqualTo(TEAM_ID);
-        then(repository).should().save(captor.capture());
+        then(repository).should().saveTeam(captor.capture());
         assertThat(captor.getValue().getName()).isEqualTo(TEAM_NAME);
     }
 
     private void givenNonExistingTeam() {
-        given(repository.doesNotExistByName(TEAM_NAME)).willReturn(true);
+        given(repository.doesTeamNotExistByName(TEAM_NAME)).willReturn(true);
     }
 
     private void givenSavedTeam() {
-        given(repository.save(any())).willReturn(TEAM_ID);
+        given(repository.saveTeam(any())).willReturn(TEAM_ID);
     }
 
     @Test
@@ -51,6 +51,6 @@ class TeamApplicationServiceTest {
     }
 
     private void givenExistingTeam() {
-        given(repository.doesNotExistByName(TEAM_NAME)).willReturn(false);
+        given(repository.doesTeamNotExistByName(TEAM_NAME)).willReturn(false);
     }
 }

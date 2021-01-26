@@ -10,7 +10,7 @@ public class TeamFactory {
     }
 
     public Team create(String name) {
-        if (teamRepository.doesNotExistByName(name)){
+        if (teamRepository.doesTeamNotExistByName(name)){
             Team team = new Team();
             team.setName(name);
             return team;

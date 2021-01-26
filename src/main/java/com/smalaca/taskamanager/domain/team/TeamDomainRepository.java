@@ -3,7 +3,7 @@ package com.smalaca.taskamanager.domain.team;
 import com.smalaca.taskamanager.model.entities.Team;
 
 public interface TeamDomainRepository {
-    Long save(Team team);
+    Long saveTeam(Team team);
 
-    boolean doesNotExistByName(String name);
+    boolean doesTeamNotExistByName(String name);
 }

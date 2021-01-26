@@ -21,6 +21,6 @@ public class UserApplicationService {
                 .withPassword(userDto.getPassword())
                 .build(userRepository);
 
-        return userRepository.save(user);
+        return userRepository.saveUser(user);
     }
 }
