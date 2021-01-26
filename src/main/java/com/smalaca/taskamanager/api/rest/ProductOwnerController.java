@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
 import com.smalaca.taskamanager.dto.ProductOwnerDto;
 import com.smalaca.taskamanager.exception.ProductOwnerNotFoundException;
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
@@ -67,17 +68,27 @@ public class ProductOwnerController {
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody ProductOwnerDto dto, UriComponentsBuilder uriComponentsBuilder) {
-        if (productOwnerRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName()).isPresent()) {
+        try {
+            Long id = create(dto);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(uriComponentsBuilder.path("/product-owner/{id}").buildAndExpand(id).toUri());
+            return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        } catch (ProductOwnerException exception) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } else {
+        }
+    }
+
+    private Long create(ProductOwnerDto dto) {
+        if (productOwnerRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName()).isEmpty()) {
             ProductOwner productOwner = new ProductOwner();
             productOwner.setFirstName(dto.getFirstName());
             productOwner.setLastName(dto.getLastName());
             ProductOwner saved = productOwnerRepository.save(productOwner);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(uriComponentsBuilder.path("/product-owner/{id}").buildAndExpand(saved.getId()).toUri());
-            return new ResponseEntity<>(headers, HttpStatus.CREATED);
+            return saved.getId();
+        } else {
+            throw ProductOwnerException.productOwnerAlreadyExists(dto.getFirstName(), dto.getLastName());
         }
     }
 
