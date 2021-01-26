@@ -5,7 +5,7 @@ public class UserException extends RuntimeException {
         super(message);
     }
 
-    public static RuntimeException userAlreadyExists(String firstName, String lastName) {
+    static RuntimeException userAlreadyExists(String firstName, String lastName) {
         return new UserException("User " + firstName + " " + lastName + " already exists.");
     }
 }
