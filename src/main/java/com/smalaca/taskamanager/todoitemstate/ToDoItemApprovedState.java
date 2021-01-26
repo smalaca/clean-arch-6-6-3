@@ -8,15 +8,16 @@ import com.smalaca.taskamanager.model.interfaces.ToDoItem;
 import com.smalaca.taskamanager.registry.EventsRegistry;
 import com.smalaca.taskamanager.service.StoryService;
 
-public class ToDoItemReleasedApproved {
+public class ToDoItemApprovedState implements ToDoItemState {
     private final StoryService storyService;
     private final EventsRegistry eventsRegistry;
 
-    public ToDoItemReleasedApproved(StoryService storyService, EventsRegistry eventsRegistry) {
+    public ToDoItemApprovedState(StoryService storyService, EventsRegistry eventsRegistry) {
         this.storyService = storyService;
         this.eventsRegistry = eventsRegistry;
     }
 
+    @Override
     public void process(ToDoItem toDoItem) {
         if (toDoItem instanceof Story) {
             Story story = (Story) toDoItem;

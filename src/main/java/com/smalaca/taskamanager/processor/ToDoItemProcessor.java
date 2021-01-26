@@ -12,7 +12,7 @@ import com.smalaca.taskamanager.service.CommunicationService;
 import com.smalaca.taskamanager.service.ProjectBacklogService;
 import com.smalaca.taskamanager.service.SprintBacklogService;
 import com.smalaca.taskamanager.service.StoryService;
-import com.smalaca.taskamanager.todoitemstate.ToDoItemReleasedApproved;
+import com.smalaca.taskamanager.todoitemstate.ToDoItemApprovedState;
 import com.smalaca.taskamanager.todoitemstate.ToDoItemReleasedState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -121,7 +121,7 @@ public class ToDoItemProcessor {
     }
 
     private void processApproved(ToDoItem toDoItem) {
-        new ToDoItemReleasedApproved(storyService, eventsRegistry).process(toDoItem);
+        new ToDoItemApprovedState(storyService, eventsRegistry).process(toDoItem);
     }
 
     private void processReleased(ToDoItem toDoItem) {
