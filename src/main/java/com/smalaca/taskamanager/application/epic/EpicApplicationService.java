@@ -7,17 +7,16 @@ import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
-import com.smalaca.taskamanager.repository.UserRepository;
 
 public class EpicApplicationService {
     private final EpicRepository epicRepository;
     private final ProjectRepository projectRepository;
     private final EpicFactory epicFactory;
 
-    public EpicApplicationService(EpicRepository epicRepository, ProjectRepository projectRepository, UserRepository userRepository) {
+    EpicApplicationService(EpicRepository epicRepository, ProjectRepository projectRepository, EpicFactory epicFactory) {
         this.epicRepository = epicRepository;
         this.projectRepository = projectRepository;
-        epicFactory = new EpicFactory(userRepository);
+        this.epicFactory = epicFactory;
     }
 
     public Long create(EpicDto dto) {

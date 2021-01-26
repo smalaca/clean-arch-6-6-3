@@ -2,6 +2,7 @@ package com.smalaca.taskamanager.api.rest;
 
 
 import com.smalaca.taskamanager.application.epic.EpicApplicationService;
+import com.smalaca.taskamanager.application.epic.EpicApplicationServiceFactory;
 import com.smalaca.taskamanager.domain.epic.UserException;
 import com.smalaca.taskamanager.dto.AssigneeDto;
 import com.smalaca.taskamanager.dto.EpicDto;
@@ -60,7 +61,7 @@ public class EpicController {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.toDoItemService = toDoItemService;
-        epicApplicationService = new EpicApplicationService(epicRepository, projectRepository, userRepository);
+        epicApplicationService = new EpicApplicationServiceFactory().epicApplicationService(epicRepository, projectRepository, userRepository);
     }
 
     @Transactional
