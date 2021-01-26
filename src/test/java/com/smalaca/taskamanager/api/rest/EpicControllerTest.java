@@ -162,7 +162,7 @@ class EpicControllerTest {
     }
 
     @Test
-    void shouldCreateProject() {
+    void shouldCreateEpic() {
         given(projectRepository.existsById(PROJECT_ID)).willReturn(true);
         given(projectRepository.findById(PROJECT_ID)).willReturn(Optional.of(project()));
         given(userRepository.findById(OWNER_ID)).willReturn(Optional.of(owner()));
