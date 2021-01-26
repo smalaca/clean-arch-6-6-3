@@ -4,8 +4,6 @@ import com.smalaca.taskamanager.domain.epic.EpicBuilder;
 import com.smalaca.taskamanager.domain.epic.UserException;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.exception.ProjectNotFoundException;
-import com.smalaca.taskamanager.model.embedded.Owner;
-import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.repository.EpicRepository;
@@ -33,22 +31,16 @@ public class EpicApplicationService {
                 .withDescription(dto.getDescription())
                 .withStatus(dto.getStatus());
 
-        Epic epic = builder.build();
-
         if (dto.hasOwnerId()) {
-            Owner owner = getUser(dto).asOwner();
-            epic.setOwner(owner);
+            builder.withOwner(getUser(dto).asOwner());
         }
 
         Project project = findProject(dto);
-
-        epic.setProject(project);
-        project.addEpic(epic);
+        builder.withProject(project);
 
         projectRepository.save(project);
-        Epic saved = epicRepository.save(epic);
 
-        return saved.getId();
+        return epicRepository.save(builder.build()).getId();
     }
 
     private User getUser(EpicDto dto) {

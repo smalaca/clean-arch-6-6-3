@@ -1,6 +1,8 @@
 package com.smalaca.taskamanager.domain.epic;
 
+import com.smalaca.taskamanager.model.embedded.Owner;
 import com.smalaca.taskamanager.model.entities.Epic;
+import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 
 public class EpicBuilder {
@@ -27,6 +29,14 @@ public class EpicBuilder {
     public EpicBuilder withStatus(String toDoItemStatus) {
         epic.setStatus(ToDoItemStatus.valueOf(toDoItemStatus));
         return this;
+    }
+
+    public void withOwner(Owner owner) {
+        epic.setOwner(owner);
+    }
+
+    public void withProject(Project project) {
+        epic.assignProject(project);
     }
 
     public Epic build() {
