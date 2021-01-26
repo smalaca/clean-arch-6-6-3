@@ -19,6 +19,7 @@ import org.mockito.ArgumentCaptor;
 
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.APPROVED;
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DONE;
+import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.IN_PROGRESS;
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.RELEASED;
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.TO_BE_DEFINED;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -171,5 +172,39 @@ class ToDoItemProcessorTest {
         assertThat(captor.getValue().getStoryId()).isEqualTo(STORY_ID);
         verifyNoMoreInteractions(storyService, eventsRegistry);
         verifyNoInteractions(projectBacklogService, communicationService, sprintBacklogService);
+    }
+
+    @Test
+    void shouldProcessInProgressEpic() {
+        Epic epic = mock(Epic.class);
+        given(epic.getStatus()).willReturn(IN_PROGRESS);
+
+        processor.processFor(epic);
+
+        verifyNoInteractions(eventsRegistry, storyService, projectBacklogService, communicationService, sprintBacklogService);
+    }
+
+    @Test
+    void shouldProcessInProgressStory() {
+        Story story = mock(Story.class);
+        given(story.getStatus()).willReturn(IN_PROGRESS);
+
+        processor.processFor(story);
+
+        verifyNoInteractions(eventsRegistry, storyService, projectBacklogService, communicationService, sprintBacklogService);
+    }
+
+    @Test
+    void shouldProcessInProgressTask() {
+        Task task = mock(Task.class);
+        Story story = mock(Story.class);
+        given(task.getStatus()).willReturn(IN_PROGRESS);
+        given(task.getStory()).willReturn(story);
+
+        processor.processFor(task);
+
+        then(storyService).should().updateProgressOf(story, task);
+        verifyNoMoreInteractions(storyService);
+        verifyNoInteractions(eventsRegistry, projectBacklogService, communicationService, sprintBacklogService);
     }
 }
