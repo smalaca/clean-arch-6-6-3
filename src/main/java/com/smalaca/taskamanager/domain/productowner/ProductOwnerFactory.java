@@ -1,17 +1,16 @@
 package com.smalaca.taskamanager.domain.productowner;
 
 import com.smalaca.taskamanager.model.entities.ProductOwner;
-import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 
 public class ProductOwnerFactory {
-    private final ProductOwnerRepository productOwnerRepository;
+    private final ProductOwnerDomainRepository productOwnerRepository;
 
-    public ProductOwnerFactory(ProductOwnerRepository productOwnerRepository) {
+    public ProductOwnerFactory(ProductOwnerDomainRepository productOwnerRepository) {
         this.productOwnerRepository = productOwnerRepository;
     }
 
     public ProductOwner create(NewProductOwnerDto dto) {
-        if (productOwnerRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName()).isEmpty()) {
+        if (productOwnerRepository.doesNotExistByFirstAndLastName(dto.getFirstName(), dto.getLastName())) {
             ProductOwner productOwner = new ProductOwner();
             productOwner.setFirstName(dto.getFirstName());
             productOwner.setLastName(dto.getLastName());

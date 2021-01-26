@@ -1,6 +1,8 @@
 package com.smalaca.taskamanager.application.productowner;
 
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.domain.productowner.NewProductOwnerDto;
+import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerTestFactory;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
@@ -22,7 +24,8 @@ class ProductOwnerApplicationServiceTest {
     private static final String LAST_NAME = "Stark";
 
     private final ProductOwnerRepository repository = mock(ProductOwnerRepository.class);
-    private final ProductOwnerApplicationService service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(repository);
+    private final ProductOwnerDomainRepository productOwnerDomainRepository = new TaskManagerAntiCorruptionLayer(null, null, repository);
+    private final ProductOwnerApplicationService service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(productOwnerDomainRepository);
 
     @Test
     void shouldCreateProductOwner() {

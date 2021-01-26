@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.application.productowner.ProductOwnerApplicationService;
 import com.smalaca.taskamanager.application.productowner.ProductOwnerApplicationServiceFactory;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
@@ -40,7 +41,8 @@ public class ProductOwnerController {
     public ProductOwnerController(ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository) {
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
-        service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(productOwnerRepository);
+        TaskManagerAntiCorruptionLayer antiCorruptionLayer = new TaskManagerAntiCorruptionLayer(null, null, productOwnerRepository);
+        service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(antiCorruptionLayer);
     }
 
     @GetMapping("/{id}")
