@@ -1,6 +1,8 @@
 package com.smalaca.taskamanager.model.entities;
 
+import com.smalaca.taskamanager.domain.owner.OwnerBuilder;
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
+import com.smalaca.taskamanager.model.embedded.Owner;
 import com.smalaca.taskamanager.model.embedded.PhoneNumber;
 import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.enums.TeamRole;
@@ -16,6 +18,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.smalaca.taskamanager.domain.owner.OwnerBuilder.owner;
 
 @Entity
 @SuppressWarnings("MethodCount")
@@ -147,5 +151,27 @@ public class User {
                 .append(emailAddress)
                 .append(teamRole)
                 .toHashCode();
+    }
+
+    public Owner asOwner() {
+        OwnerBuilder ownerBuilder = owner(userName.getFirstName(), userName.getLastName());
+
+        if (hasEmailAddress()) {
+            ownerBuilder.withEmailAddress(emailAddress);
+        }
+
+        if (hasPhoneNumber()) {
+            ownerBuilder.withPhoneNumber(phoneNumber);
+        }
+
+        return ownerBuilder.build();
+    }
+
+    private boolean hasPhoneNumber() {
+        return phoneNumber != null;
+    }
+
+    private boolean hasEmailAddress() {
+        return emailAddress != null;
     }
 }

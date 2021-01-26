@@ -130,4 +130,8 @@ public class EpicDto {
     public void setAssignee(AssigneeDto assignee) {
         this.assignee = assignee;
     }
+
+    public boolean hasOwnerId() {
+        return ownerId != null;
+    }
 }

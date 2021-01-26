@@ -151,4 +151,9 @@ public class Epic implements ToDoItem {
     public void addStory(Story story) {
         stories.add(story);
     }
+
+    public void assignProject(Project project) {
+        setProject(project);
+        project.addEpic(this);
+    }
 }

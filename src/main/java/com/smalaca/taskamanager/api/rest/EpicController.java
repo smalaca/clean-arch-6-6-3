@@ -1,6 +1,9 @@
 package com.smalaca.taskamanager.api.rest;
 
 
+import com.smalaca.taskamanager.application.epic.EpicApplicationService;
+import com.smalaca.taskamanager.application.epic.EpicApplicationServiceFactory;
+import com.smalaca.taskamanager.domain.epic.UserException;
 import com.smalaca.taskamanager.dto.AssigneeDto;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.dto.StakeholderDto;
@@ -48,8 +51,8 @@ public class EpicController {
     private final EpicRepository epicRepository;
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
-    private final ProjectRepository projectRepository;
     private final ToDoItemService toDoItemService;
+    private final EpicApplicationService epicApplicationService;
 
     public EpicController(
             EpicRepository epicRepository, UserRepository userRepository, TeamRepository teamRepository,
@@ -57,8 +60,8 @@ public class EpicController {
         this.epicRepository = epicRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
-        this.projectRepository = projectRepository;
         this.toDoItemService = toDoItemService;
+        epicApplicationService = new EpicApplicationServiceFactory().epicApplicationService(epicRepository, projectRepository, userRepository);
     }
 
     @Transactional
@@ -146,57 +149,12 @@ public class EpicController {
 
     @PostMapping
     public ResponseEntity<Long> create(@RequestBody EpicDto dto) {
-        Epic epic = new Epic();
-        epic.setTitle(dto.getTitle());
-        epic.setDescription(dto.getDescription());
-        epic.setStatus(ToDoItemStatus.valueOf(dto.getStatus()));
-
-        if (dto.getOwnerId() != null) {
-            Optional<User> found = userRepository.findById(dto.getOwnerId());
-
-            if (found.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
-            } else {
-                User user = found.get();
-                Owner owner = new Owner();
-                owner.setFirstName(user.getUserName().getFirstName());
-                owner.setLastName(user.getUserName().getLastName());
-
-                if (user.getEmailAddress() != null) {
-                    EmailAddress emailAddress = new EmailAddress();
-                    emailAddress.setEmailAddress(user.getEmailAddress().getEmailAddress());
-                    owner.setEmailAddress(emailAddress);
-                }
-
-                if (user.getPhoneNumber() != null) {
-                    PhoneNumber phoneNumber = new PhoneNumber();
-                    phoneNumber.setPrefix(user.getPhoneNumber().getPrefix());
-                    phoneNumber.setNumber(user.getPhoneNumber().getNumber());
-                    owner.setPhoneNumber(phoneNumber);
-                }
-
-                epic.setOwner(owner);
-            }
-        }
-
-        Project project;
         try {
-            if (!projectRepository.existsById(dto.getProjectId())) {
-                throw new ProjectNotFoundException();
-            }
-
-            project = projectRepository.findById(dto.getProjectId()).get();
-        } catch (ProjectNotFoundException exception) {
+            Long id = epicApplicationService.create(dto);
+            return ResponseEntity.ok(id);
+        } catch (ProjectNotFoundException | UserException exception) {
             return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
         }
-
-        epic.setProject(project);
-        project.addEpic(epic);
-
-        projectRepository.save(project);
-        Epic saved = epicRepository.save(epic);
-
-        return ResponseEntity.ok(saved.getId());
     }
 
     @PutMapping("/{id}")
