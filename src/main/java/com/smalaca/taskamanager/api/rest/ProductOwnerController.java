@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.application.productowner.ProductOwnerApplicationService;
 import com.smalaca.taskamanager.application.productowner.ProductOwnerApplicationServiceFactory;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
 import com.smalaca.taskamanager.dto.ProductOwnerDto;
@@ -34,10 +35,12 @@ import static java.util.stream.Collectors.toList;
 public class ProductOwnerController {
     private final ProductOwnerRepository productOwnerRepository;
     private final ProjectRepository projectRepository;
+    private final ProductOwnerApplicationService service;
 
     public ProductOwnerController(ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository) {
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
+        service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(productOwnerRepository);
     }
 
     @GetMapping("/{id}")
@@ -70,7 +73,7 @@ public class ProductOwnerController {
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody ProductOwnerDto dto, UriComponentsBuilder uriComponentsBuilder) {
         try {
-            Long id = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(productOwnerRepository).create(dto.asNewProductOwnerDto());
+            Long id = service.create(dto.asNewProductOwnerDto());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(uriComponentsBuilder.path("/product-owner/{id}").buildAndExpand(id).toUri());
