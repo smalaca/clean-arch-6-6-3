@@ -1,14 +1,11 @@
 package com.smalaca.taskamanager.application.user;
 
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
-import com.smalaca.taskamanager.domain.user.UserTestFactory;
 import com.smalaca.taskamanager.dto.UserDto;
 import com.smalaca.taskamanager.model.entities.User;
-import com.smalaca.taskamanager.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-
-import java.util.Optional;
 
 import static com.smalaca.taskamanager.model.enums.TeamRole.DEVELOPER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +21,9 @@ class UserApplicationServiceTest {
     private static final String TEAM_ROLE = "DEVELOPER";
     private static final String LOGIN = "spiderman";
     private static final String PASSWORD = "w3bRUL3Z";
+    private static final Long USER_ID = 123L;
 
-    private final UserRepository repository = mock(UserRepository.class);
+    private final UserDomainRepository repository = mock(UserDomainRepository.class);
     private final UserApplicationService service = new UserApplicationService(repository);
 
     @Test
@@ -37,19 +35,18 @@ class UserApplicationServiceTest {
     }
 
     private void givenExistingUser() {
-        User user = UserTestFactory.create(FIRST_NAME, LAST_NAME);
-        given(repository.findByUserNameFirstNameAndUserNameLastName(FIRST_NAME, LAST_NAME)).willReturn(Optional.of(user));
+        given(repository.doesNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(false);
     }
 
     @Test
     void shouldCreateUser() {
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         givenNonExistingUser();
-        given(repository.save(any())).willReturn(UserTestFactory.create(FIRST_NAME, LAST_NAME));
+        given(repository.save(any())).willReturn(USER_ID);
 
         Long id = service.create(givenUserDto());
 
-        assertThat(id).isNull();
+        assertThat(id).isEqualTo(USER_ID);
         then(repository).should().save(captor.capture());
         User actual = captor.getValue();
         assertThat(actual.getUserName().getFirstName()).isEqualTo(FIRST_NAME);
@@ -60,7 +57,7 @@ class UserApplicationServiceTest {
     }
 
     private void givenNonExistingUser() {
-        given(repository.findByUserNameFirstNameAndUserNameLastName(FIRST_NAME, LAST_NAME)).willReturn(Optional.empty());
+        given(repository.doesNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(true);
     }
 
     private UserDto givenUserDto() {

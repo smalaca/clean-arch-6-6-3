@@ -3,7 +3,6 @@ package com.smalaca.taskamanager.domain.user;
 import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.TeamRole;
-import com.smalaca.taskamanager.repository.UserRepository;
 
 public class UserBuilder {
     private final User user;
@@ -18,7 +17,7 @@ public class UserBuilder {
         return new UserBuilder(new User());
     }
 
-    public User build(UserRepository userRepository) {
+    public User build(UserDomainRepository userRepository) {
         if (userDoesNotExist(userRepository)) {
             return user;
         } else {
@@ -26,8 +25,8 @@ public class UserBuilder {
         }
     }
 
-    private boolean userDoesNotExist(UserRepository userRepository) {
-        return userRepository.findByUserNameFirstNameAndUserNameLastName(firstName, lastName).isEmpty();
+    private boolean userDoesNotExist(UserDomainRepository userRepository) {
+        return userRepository.doesNotExistsByFirstAndLastName(firstName, lastName);
     }
 
     public UserBuilder withTeamRole(String teamRole) {

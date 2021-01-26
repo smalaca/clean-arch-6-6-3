@@ -1,15 +1,15 @@
 package com.smalaca.taskamanager.application.user;
 
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.dto.UserDto;
 import com.smalaca.taskamanager.model.entities.User;
-import com.smalaca.taskamanager.repository.UserRepository;
 
 import static com.smalaca.taskamanager.domain.user.UserBuilder.user;
 
 public class UserApplicationService {
-    private final UserRepository userRepository;
+    private final UserDomainRepository userRepository;
 
-    public UserApplicationService(UserRepository userRepository) {
+    public UserApplicationService(UserDomainRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -21,6 +21,6 @@ public class UserApplicationService {
                 .withPassword(userDto.getPassword())
                 .build(userRepository);
 
-        return userRepository.save(user).getId();
+        return userRepository.save(user);
     }
 }
