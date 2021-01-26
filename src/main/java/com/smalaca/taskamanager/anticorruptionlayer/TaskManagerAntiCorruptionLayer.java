@@ -1,30 +1,37 @@
 package com.smalaca.taskamanager.anticorruptionlayer;
 
+import com.smalaca.taskamanager.domain.epic.EpicDomainRepository;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
 import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
+import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.Team;
 import com.smalaca.taskamanager.model.entities.User;
+import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
 import com.smalaca.taskamanager.repository.TeamRepository;
 import com.smalaca.taskamanager.repository.UserRepository;
 
-public class TaskManagerAntiCorruptionLayer implements TeamDomainRepository, UserDomainRepository, ProductOwnerDomainRepository, ProjectDomainRepository {
+public class TaskManagerAntiCorruptionLayer implements
+        TeamDomainRepository, UserDomainRepository, ProductOwnerDomainRepository, ProjectDomainRepository, EpicDomainRepository {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
     private final ProductOwnerRepository productOwnerRepository;
     private final ProjectRepository projectRepository;
+    private final EpicRepository epicRepository;
 
     public TaskManagerAntiCorruptionLayer(
-            TeamRepository teamRepository, UserRepository userRepository, ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository) {
+            TeamRepository teamRepository, UserRepository userRepository, ProductOwnerRepository productOwnerRepository,
+            ProjectRepository projectRepository, EpicRepository epicRepository) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
+        this.epicRepository = epicRepository;
     }
 
     @Override
@@ -80,5 +87,10 @@ public class TaskManagerAntiCorruptionLayer implements TeamDomainRepository, Use
     @Override
     public Project findProjectById(Long projectId) {
         return projectRepository.findById(projectId).get();
+    }
+
+    @Override
+    public Long saveEpic(Epic epic) {
+        return epicRepository.save(epic).getId();
     }
 }
