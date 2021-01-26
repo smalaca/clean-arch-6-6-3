@@ -4,9 +4,7 @@ import com.smalaca.taskamanager.domain.epic.EpicBuilder;
 import com.smalaca.taskamanager.domain.epic.UserException;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.exception.ProjectNotFoundException;
-import com.smalaca.taskamanager.model.embedded.EmailAddress;
 import com.smalaca.taskamanager.model.embedded.Owner;
-import com.smalaca.taskamanager.model.embedded.PhoneNumber;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.User;
@@ -37,25 +35,8 @@ public class EpicApplicationService {
 
         Epic epic = builder.build();
 
-        if (dto.getOwnerId() != null) {
-            User user = getUser(dto);
-            Owner owner = new Owner();
-            owner.setFirstName(user.getUserName().getFirstName());
-            owner.setLastName(user.getUserName().getLastName());
-
-            if (user.getEmailAddress() != null) {
-                EmailAddress emailAddress = new EmailAddress();
-                emailAddress.setEmailAddress(user.getEmailAddress().getEmailAddress());
-                owner.setEmailAddress(emailAddress);
-            }
-
-            if (user.getPhoneNumber() != null) {
-                PhoneNumber phoneNumber = new PhoneNumber();
-                phoneNumber.setPrefix(user.getPhoneNumber().getPrefix());
-                phoneNumber.setNumber(user.getPhoneNumber().getNumber());
-                owner.setPhoneNumber(phoneNumber);
-            }
-
+        if (dto.hasOwnerId()) {
+            Owner owner = getUser(dto).asOwner();
             epic.setOwner(owner);
         }
 

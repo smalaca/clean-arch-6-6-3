@@ -1,6 +1,7 @@
 package com.smalaca.taskamanager.model.entities;
 
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
+import com.smalaca.taskamanager.model.embedded.Owner;
 import com.smalaca.taskamanager.model.embedded.PhoneNumber;
 import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.enums.TeamRole;
@@ -147,5 +148,35 @@ public class User {
                 .append(emailAddress)
                 .append(teamRole)
                 .toHashCode();
+    }
+
+    public Owner asOwner() {
+        Owner owner = new Owner();
+        owner.setFirstName(userName.getFirstName());
+        owner.setLastName(userName.getLastName());
+
+        if (hasEmailAddress()) {
+            EmailAddress emailAddress = new EmailAddress();
+            emailAddress.setEmailAddress(this.emailAddress.getEmailAddress());
+            owner.setEmailAddress(emailAddress);
+        }
+
+        if (hasPhoneNumber()) {
+            PhoneNumber phoneNumber = new PhoneNumber();
+            phoneNumber.setPrefix(this.phoneNumber.getPrefix());
+            phoneNumber.setNumber(this.phoneNumber.getNumber());
+
+            owner.setPhoneNumber(phoneNumber);
+        }
+
+        return owner;
+    }
+
+    private boolean hasPhoneNumber() {
+        return phoneNumber != null;
+    }
+
+    private boolean hasEmailAddress() {
+        return emailAddress != null;
     }
 }
