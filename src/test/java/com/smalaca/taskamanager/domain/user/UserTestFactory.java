@@ -6,19 +6,15 @@ import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.User;
 
 public class UserTestFactory {
-    public static User create(String firstName, String lastName) {
+    public static User create(String firstName, String lastName, String address, String phonePrefix, String phoneNumber) {
         User user = new User();
         UserName userName = new UserName();
         userName.setFirstName(firstName);
         userName.setLastName(lastName);
         user.setUserName(userName);
-        return user;
-    }
-
-    public static User create(String firstName, String lastName, String address, String phonePrefix, String phoneNumber) {
-        User user = create(firstName, lastName);
         user.setEmailAddress(emailAddress(address));
         user.setPhoneNumber(phoneNumber(phonePrefix, phoneNumber));
+
         return user;
     }
 
