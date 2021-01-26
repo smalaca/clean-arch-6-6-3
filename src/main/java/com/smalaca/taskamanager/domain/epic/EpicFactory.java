@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.domain.epic;
 
+import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;

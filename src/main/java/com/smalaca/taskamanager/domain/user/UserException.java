@@ -8,4 +8,8 @@ public class UserException extends RuntimeException {
     static RuntimeException userAlreadyExists(String firstName, String lastName) {
         return new UserException("User " + firstName + " " + lastName + " already exists.");
     }
+
+    public static RuntimeException notFound(Long ownerId) {
+        return new UserException("User with id " + ownerId + " does not exist");
+    }
 }

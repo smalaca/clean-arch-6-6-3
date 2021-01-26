@@ -3,7 +3,7 @@ package com.smalaca.taskamanager.api.rest;
 
 import com.smalaca.taskamanager.application.epic.EpicApplicationService;
 import com.smalaca.taskamanager.application.epic.EpicApplicationServiceFactory;
-import com.smalaca.taskamanager.domain.epic.UserException;
+import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.AssigneeDto;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.dto.StakeholderDto;
