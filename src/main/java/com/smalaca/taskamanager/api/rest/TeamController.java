@@ -2,6 +2,8 @@ package com.smalaca.taskamanager.api.rest;
 
 
 import com.google.common.collect.Iterables;
+import com.smalaca.taskamanager.application.team.TeamApplicationService;
+import com.smalaca.taskamanager.domain.team.TeamException;
 import com.smalaca.taskamanager.dto.TeamDto;
 import com.smalaca.taskamanager.dto.TeamMembersDto;
 import com.smalaca.taskamanager.exception.TeamNotFoundException;
@@ -89,16 +91,14 @@ public class TeamController {
 
     @PostMapping
     public ResponseEntity<Void> createTeam(@RequestBody TeamDto teamDto, UriComponentsBuilder uriComponentsBuilder) {
-        if (teamRepository.findByName(teamDto.getName()).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } else {
-            Team team = new Team();
-            team.setName(teamDto.getName());
-            Team saved = teamRepository.save(team);
+        try {
+            Long id = new TeamApplicationService(teamRepository).create(teamDto.getName());
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(uriComponentsBuilder.path("/team/{id}").buildAndExpand(saved.getId()).toUri());
+            headers.setLocation(uriComponentsBuilder.path("/team/{id}").buildAndExpand(id).toUri());
             return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        } catch (TeamException exception) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
