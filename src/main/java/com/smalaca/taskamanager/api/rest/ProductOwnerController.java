@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.application.productowner.NewProductOwnerDto;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
 import com.smalaca.taskamanager.dto.ProductOwnerDto;
 import com.smalaca.taskamanager.exception.ProductOwnerNotFoundException;
@@ -69,7 +70,7 @@ public class ProductOwnerController {
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody ProductOwnerDto dto, UriComponentsBuilder uriComponentsBuilder) {
         try {
-            Long id = create(dto);
+            Long id = create(dto.asNewProductOwnerDto());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(uriComponentsBuilder.path("/product-owner/{id}").buildAndExpand(id).toUri());
@@ -79,7 +80,7 @@ public class ProductOwnerController {
         }
     }
 
-    private Long create(ProductOwnerDto dto) {
+    private Long create(NewProductOwnerDto dto) {
         if (productOwnerRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName()).isEmpty()) {
             ProductOwner productOwner = new ProductOwner();
             productOwner.setFirstName(dto.getFirstName());

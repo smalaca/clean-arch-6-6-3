@@ -1,5 +1,7 @@
 package com.smalaca.taskamanager.dto;
 
+import com.smalaca.taskamanager.application.productowner.NewProductOwnerDto;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,5 +68,9 @@ public class ProductOwnerDto {
 
     public List<Long> getProjectIds() {
         return projectIds;
+    }
+
+    public NewProductOwnerDto asNewProductOwnerDto() {
+        return new NewProductOwnerDto(firstName, lastName);
     }
 }
