@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.application.epic;
 
+import com.smalaca.taskamanager.domain.epic.EpicBuilder;
 import com.smalaca.taskamanager.domain.epic.UserException;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.exception.ProjectNotFoundException;
@@ -9,12 +10,13 @@ import com.smalaca.taskamanager.model.embedded.PhoneNumber;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.User;
-import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
 import com.smalaca.taskamanager.repository.UserRepository;
 
 import java.util.Optional;
+
+import static com.smalaca.taskamanager.domain.epic.EpicBuilder.epic;
 
 public class EpicApplicationService {
     private final EpicRepository epicRepository;
@@ -28,37 +30,33 @@ public class EpicApplicationService {
     }
 
     public Long create(EpicDto dto) {
-        Epic epic = new Epic();
-        epic.setTitle(dto.getTitle());
-        epic.setDescription(dto.getDescription());
-        epic.setStatus(ToDoItemStatus.valueOf(dto.getStatus()));
+        EpicBuilder builder = epic()
+                .withTitle(dto.getTitle())
+                .withDescription(dto.getDescription())
+                .withStatus(dto.getStatus());
+
+        Epic epic = builder.build();
 
         if (dto.getOwnerId() != null) {
-            Optional<User> found = userRepository.findById(dto.getOwnerId());
+            User user = getUser(dto);
+            Owner owner = new Owner();
+            owner.setFirstName(user.getUserName().getFirstName());
+            owner.setLastName(user.getUserName().getLastName());
 
-            if (found.isEmpty()) {
-                throw UserException.notFound(dto.getOwnerId());
-            } else {
-                User user = found.get();
-                Owner owner = new Owner();
-                owner.setFirstName(user.getUserName().getFirstName());
-                owner.setLastName(user.getUserName().getLastName());
-
-                if (user.getEmailAddress() != null) {
-                    EmailAddress emailAddress = new EmailAddress();
-                    emailAddress.setEmailAddress(user.getEmailAddress().getEmailAddress());
-                    owner.setEmailAddress(emailAddress);
-                }
-
-                if (user.getPhoneNumber() != null) {
-                    PhoneNumber phoneNumber = new PhoneNumber();
-                    phoneNumber.setPrefix(user.getPhoneNumber().getPrefix());
-                    phoneNumber.setNumber(user.getPhoneNumber().getNumber());
-                    owner.setPhoneNumber(phoneNumber);
-                }
-
-                epic.setOwner(owner);
+            if (user.getEmailAddress() != null) {
+                EmailAddress emailAddress = new EmailAddress();
+                emailAddress.setEmailAddress(user.getEmailAddress().getEmailAddress());
+                owner.setEmailAddress(emailAddress);
             }
+
+            if (user.getPhoneNumber() != null) {
+                PhoneNumber phoneNumber = new PhoneNumber();
+                phoneNumber.setPrefix(user.getPhoneNumber().getPrefix());
+                phoneNumber.setNumber(user.getPhoneNumber().getNumber());
+                owner.setPhoneNumber(phoneNumber);
+            }
+
+            epic.setOwner(owner);
         }
 
         Project project = findProject(dto);
@@ -72,13 +70,21 @@ public class EpicApplicationService {
         return saved.getId();
     }
 
+    private User getUser(EpicDto dto) {
+        Optional<User> found = userRepository.findById(dto.getOwnerId());
+
+        if (found.isEmpty()) {
+            throw UserException.notFound(dto.getOwnerId());
+        } else {
+            return found.get();
+        }
+    }
+
     private Project findProject(EpicDto dto) {
-        Project project;
         if (!projectRepository.existsById(dto.getProjectId())) {
             throw new ProjectNotFoundException();
         }
 
-        project = projectRepository.findById(dto.getProjectId()).get();
-        return project;
+        return projectRepository.findById(dto.getProjectId()).get();
     }
 }
