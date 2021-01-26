@@ -4,7 +4,6 @@ import com.smalaca.taskamanager.events.EpicReadyToPrioritize;
 import com.smalaca.taskamanager.events.StoryApprovedEvent;
 import com.smalaca.taskamanager.events.StoryDoneEvent;
 import com.smalaca.taskamanager.events.TaskApprovedEvent;
-import com.smalaca.taskamanager.events.ToDoItemReleasedEvent;
 import com.smalaca.taskamanager.exception.UnsupportedToDoItemType;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Story;
@@ -15,6 +14,7 @@ import com.smalaca.taskamanager.service.CommunicationService;
 import com.smalaca.taskamanager.service.ProjectBacklogService;
 import com.smalaca.taskamanager.service.SprintBacklogService;
 import com.smalaca.taskamanager.service.StoryService;
+import com.smalaca.taskamanager.todoitemstate.ToDoItemReleasedState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +27,18 @@ public class ToDoItemProcessor {
     @Autowired private ProjectBacklogService projectBacklogService;
     @Autowired private CommunicationService communicationService;
     @Autowired private SprintBacklogService sprintBacklogService;
+
+    public ToDoItemProcessor() {}
+
+    ToDoItemProcessor(
+            StoryService storyService, EventsRegistry eventsRegistry, ProjectBacklogService projectBacklogService,
+            CommunicationService communicationService, SprintBacklogService sprintBacklogService) {
+        this.storyService = storyService;
+        this.eventsRegistry = eventsRegistry;
+        this.projectBacklogService = projectBacklogService;
+        this.communicationService = communicationService;
+        this.sprintBacklogService = sprintBacklogService;
+    }
 
     public void processFor(ToDoItem toDoItem) {
         switch (toDoItem.getStatus()) {
@@ -129,8 +141,6 @@ public class ToDoItemProcessor {
     }
 
     private void processReleased(ToDoItem toDoItem) {
-        ToDoItemReleasedEvent event = new ToDoItemReleasedEvent();
-        event.setToDoItemId(toDoItem.getId());
-        eventsRegistry.publish(event);
+        new ToDoItemReleasedState(eventsRegistry).process(toDoItem);
     }
 }
