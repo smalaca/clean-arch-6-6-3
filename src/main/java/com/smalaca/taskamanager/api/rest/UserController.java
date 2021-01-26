@@ -1,11 +1,11 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.application.user.UserApplicationService;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.UserDto;
 import com.smalaca.taskamanager.exception.UserNotFoundException;
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
 import com.smalaca.taskamanager.model.embedded.PhoneNumber;
-import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.repository.UserRepository;
@@ -32,10 +32,12 @@ import java.util.Optional;
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class UserController {
     private final UserRepository userRepository;
+    private final UserApplicationService userApplicationService;
 
     @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
+        userApplicationService = new UserApplicationService(userRepository);
     }
 
     @GetMapping
@@ -109,38 +111,14 @@ public class UserController {
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody UserDto userDto, UriComponentsBuilder uriComponentsBuilder) {
         try {
-            Long id = create(userDto);
+            Long id = userApplicationService.create(userDto);
+
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(uriComponentsBuilder.path("/user/{id}").buildAndExpand(id).toUri());
             return new ResponseEntity<>(headers, HttpStatus.CREATED);
         } catch (UserException exception) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-    }
-
-    private Long create(UserDto userDto) {
-        if (doesNotExist(userDto)) {
-            User user = new User();
-            user.setTeamRole(TeamRole.valueOf(userDto.getTeamRole()));
-            UserName userName = new UserName();
-            userName.setFirstName(userDto.getFirstName());
-            userName.setLastName(userDto.getLastName());
-            user.setUserName(userName);
-            user.setLogin(userDto.getLogin());
-            user.setPassword(userDto.getPassword());
-
-            return userRepository.save(user).getId();
-        } else {
-            throw UserException.userAlreadyExists(userDto.getFirstName(), userDto.getLastName());
-        }
-    }
-
-    private boolean doesNotExist(UserDto userDto) {
-        return !exists(userDto);
-    }
-
-    private boolean exists(UserDto userDto) {
-        return !userRepository.findByUserNameFirstNameAndUserNameLastName(userDto.getFirstName(), userDto.getLastName()).isEmpty();
     }
 
     @PutMapping(value = "/{id}")
