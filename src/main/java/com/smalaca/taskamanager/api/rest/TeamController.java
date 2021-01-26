@@ -3,7 +3,7 @@ package com.smalaca.taskamanager.api.rest;
 
 import com.google.common.collect.Iterables;
 import com.smalaca.taskamanager.application.team.TeamApplicationService;
-import com.smalaca.taskamanager.application.team.TeamApplicationServiceFactor;
+import com.smalaca.taskamanager.application.team.TeamApplicationServiceFactory;
 import com.smalaca.taskamanager.domain.team.TeamException;
 import com.smalaca.taskamanager.dto.TeamDto;
 import com.smalaca.taskamanager.dto.TeamMembersDto;
@@ -44,7 +44,7 @@ public class TeamController {
     public TeamController(TeamRepository teamRepository, UserRepository userRepository) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
-        teamApplicationService = new TeamApplicationServiceFactor().teamApplicationService(teamRepository);
+        teamApplicationService = new TeamApplicationServiceFactory().teamApplicationService(teamRepository);
     }
 
     @GetMapping
