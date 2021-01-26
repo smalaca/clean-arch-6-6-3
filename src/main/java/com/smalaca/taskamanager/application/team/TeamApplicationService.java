@@ -6,13 +6,15 @@ import com.smalaca.taskamanager.repository.TeamRepository;
 
 public class TeamApplicationService {
     private final TeamRepository teamRepository;
+    private final TeamFactory teamFactory;
 
-    public TeamApplicationService(TeamRepository teamRepository) {
+    public TeamApplicationService(TeamRepository teamRepository, TeamFactory teamFactory) {
         this.teamRepository = teamRepository;
+        this.teamFactory = teamFactory;
     }
 
     public Long create(String name) {
-        Team team = new TeamFactory(teamRepository).create(name);
+        Team team = teamFactory.create(name);
         Team saved = teamRepository.save(team);
 
         return saved.getId();

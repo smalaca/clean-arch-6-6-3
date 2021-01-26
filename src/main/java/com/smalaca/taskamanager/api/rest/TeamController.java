@@ -3,6 +3,7 @@ package com.smalaca.taskamanager.api.rest;
 
 import com.google.common.collect.Iterables;
 import com.smalaca.taskamanager.application.team.TeamApplicationService;
+import com.smalaca.taskamanager.application.team.TeamApplicationServiceFactor;
 import com.smalaca.taskamanager.domain.team.TeamException;
 import com.smalaca.taskamanager.dto.TeamDto;
 import com.smalaca.taskamanager.dto.TeamMembersDto;
@@ -38,10 +39,12 @@ import static java.util.stream.Collectors.toList;
 public class TeamController {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final TeamApplicationService teamApplicationService;
 
     public TeamController(TeamRepository teamRepository, UserRepository userRepository) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
+        teamApplicationService = new TeamApplicationServiceFactor().teamApplicationService(teamRepository);
     }
 
     @GetMapping
@@ -92,7 +95,7 @@ public class TeamController {
     @PostMapping
     public ResponseEntity<Void> createTeam(@RequestBody TeamDto teamDto, UriComponentsBuilder uriComponentsBuilder) {
         try {
-            Long id = new TeamApplicationService(teamRepository).create(teamDto.getName());
+            Long id = teamApplicationService.create(teamDto.getName());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(uriComponentsBuilder.path("/team/{id}").buildAndExpand(id).toUri());
