@@ -1,7 +1,6 @@
 package com.smalaca.taskamanager.processor;
 
 import com.smalaca.taskamanager.events.EpicReadyToPrioritize;
-import com.smalaca.taskamanager.events.StoryDoneEvent;
 import com.smalaca.taskamanager.exception.UnsupportedToDoItemType;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Story;
@@ -19,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-
-import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DONE;
 
 @Component
 public class ToDoItemProcessor {
@@ -54,10 +51,6 @@ public class ToDoItemProcessor {
 
             case IN_PROGRESS:
                 processInProgress(toDoItem);
-                break;
-
-            case DONE:
-                processDone(toDoItem);
                 break;
 
             default:
@@ -105,24 +98,6 @@ public class ToDoItemProcessor {
         if (toDoItem instanceof Task) {
             Task task = (Task) toDoItem;
             storyService.updateProgressOf(task.getStory(), task);
-        }
-    }
-
-    private void processDone(ToDoItem toDoItem) {
-        if (toDoItem instanceof Task) {
-            Task task = (Task) toDoItem;
-            Story story = task.getStory();
-            storyService.updateProgressOf(task.getStory(), task);
-            if (DONE.equals(story.getStatus())) {
-                StoryDoneEvent event = new StoryDoneEvent();
-                event.setStoryId(story.getId());
-                eventsRegistry.publish(event);
-            }
-        } else if (toDoItem instanceof Story) {
-            Story story = (Story) toDoItem;
-            StoryDoneEvent event = new StoryDoneEvent();
-            event.setStoryId(story.getId());
-            eventsRegistry.publish(event);
         }
     }
 }

@@ -7,11 +7,16 @@ import com.smalaca.taskamanager.service.StoryService;
 
 import java.util.Map;
 
+import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.APPROVED;
+import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.DONE;
+import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.RELEASED;
+
 public class ToDoItemStatesFactory {
     public Map<ToDoItemStatus, ToDoItemState> getAll(StoryService storyService, EventsRegistry eventsRegistry) {
         return ImmutableMap.of(
-                ToDoItemStatus.APPROVED, new ToDoItemApprovedState(storyService, eventsRegistry),
-                ToDoItemStatus.RELEASED, new ToDoItemReleasedState(eventsRegistry)
+                APPROVED, new ToDoItemApprovedState(storyService, eventsRegistry),
+                RELEASED, new ToDoItemReleasedState(eventsRegistry),
+                DONE, new ToDoItemDoneState(storyService, eventsRegistry)
         );
     }
 }
