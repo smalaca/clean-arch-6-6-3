@@ -1,6 +1,5 @@
 package com.smalaca.taskamanager.application.epic;
 
-import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.domain.epic.EpicDomainRepository;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
@@ -12,13 +11,8 @@ import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
-import com.smalaca.taskamanager.repository.EpicRepository;
-import com.smalaca.taskamanager.repository.ProjectRepository;
-import com.smalaca.taskamanager.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-
-import java.util.Optional;
 
 import static com.smalaca.taskamanager.model.enums.ToDoItemStatus.IN_PROGRESS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,15 +34,12 @@ class EpicApplicationServiceTest {
     private static final long OWNER_ID = 42;
     private static final long PROJECT_ID = 69;
     private static final Project PROJECT = new Project();
+    private static final long EPIC_ID = 1357L;
 
-    private final EpicRepository epicRepository = mock(EpicRepository.class);
-    private final ProjectRepository projectRepository = mock(ProjectRepository.class);
-    private final UserRepository userRepository = mock(UserRepository.class);
-    private final EpicDomainRepository epicDomainRepository = new TaskManagerAntiCorruptionLayer(null, null, null, null, epicRepository);
-    private final UserDomainRepository userDomainRepository = new TaskManagerAntiCorruptionLayer(null, userRepository, null, null, null);
-    private final ProjectDomainRepository projectDomainRepository = new TaskManagerAntiCorruptionLayer(null, null, null, projectRepository, null);
-    private final EpicApplicationService service = new EpicApplicationServiceFactory().epicApplicationService(
-            epicDomainRepository, projectDomainRepository, userDomainRepository);
+    private final EpicDomainRepository epicRepository = mock(EpicDomainRepository.class);
+    private final UserDomainRepository userRepository = mock(UserDomainRepository.class);
+    private final ProjectDomainRepository projectRepository = mock(ProjectDomainRepository.class);
+    private final EpicApplicationService service = new EpicApplicationServiceFactory().epicApplicationService(epicRepository, projectRepository, userRepository);
 
     @Test
     void shouldRecognizeProjectDoesNotExist() {
@@ -58,7 +49,7 @@ class EpicApplicationServiceTest {
     }
 
     private void givenNonExistingProject() {
-        given(projectRepository.existsById(PROJECT_ID)).willReturn(false);
+        given(projectRepository.existsProjectById(PROJECT_ID)).willReturn(false);
     }
 
     @Test
@@ -69,8 +60,8 @@ class EpicApplicationServiceTest {
 
         Long id = service.create(givenEpicDto());
 
-        assertThat(id).isNull();
-        then(epicRepository).should().save(captor.capture());
+        assertThat(id).isEqualTo(EPIC_ID);
+        then(epicRepository).should().saveEpic(captor.capture());
         Epic actual = captor.getValue();
         assertThat(actual.getTitle()).isEqualTo(TITLE);
         assertThat(actual.getDescription()).isEqualTo(DESCRIPTION);
@@ -89,7 +80,7 @@ class EpicApplicationServiceTest {
     }
 
     private void givenNonExistingUser() {
-        given(userRepository.findById(OWNER_ID)).willReturn(Optional.empty());
+        given(userRepository.existsUserById(OWNER_ID)).willReturn(false);
     }
 
     @Test
@@ -101,8 +92,8 @@ class EpicApplicationServiceTest {
 
         Long id = service.create(givenEpicDtoWithOwnerId());
 
-        assertThat(id).isNull();
-        then(epicRepository).should().save(captor.capture());
+        assertThat(id).isEqualTo(EPIC_ID);
+        then(epicRepository).should().saveEpic(captor.capture());
         Epic actual = captor.getValue();
         assertThat(actual.getTitle()).isEqualTo(TITLE);
         assertThat(actual.getDescription()).isEqualTo(DESCRIPTION);
@@ -116,22 +107,23 @@ class EpicApplicationServiceTest {
     }
 
     private void thenProjectWasUpdated(Epic actual) {
-        then(projectRepository).should().save(PROJECT);
+        then(projectRepository).should().saveProject(PROJECT);
         assertThat(PROJECT.getEpics()).contains(actual);
     }
 
     private void givenSavedEpic() {
-        given(epicRepository.save(any())).willReturn(new Epic());
+        given(epicRepository.saveEpic(any())).willReturn(EPIC_ID);
     }
 
     private void givenExistingUser() {
         User user = UserTestFactory.create(FIRST_NAME, LAST_NAME, EMAIL_ADDRESS, PHONE_PREFIX, PHONE_NUMBER);
-        given(userRepository.findById(OWNER_ID)).willReturn(Optional.of(user));
+        given(userRepository.existsUserById(OWNER_ID)).willReturn(true);
+        given(userRepository.findUserById(OWNER_ID)).willReturn(user);
     }
 
     private void givenExistingProject() {
-        given(projectRepository.existsById(PROJECT_ID)).willReturn(true);
-        given(projectRepository.findById(PROJECT_ID)).willReturn(Optional.of(PROJECT));
+        given(projectRepository.existsProjectById(PROJECT_ID)).willReturn(true);
+        given(projectRepository.findProjectById(PROJECT_ID)).willReturn(PROJECT);
     }
 
     private EpicDto givenEpicDtoWithOwnerId() {
