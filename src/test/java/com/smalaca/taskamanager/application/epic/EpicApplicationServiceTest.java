@@ -1,5 +1,7 @@
 package com.smalaca.taskamanager.application.epic;
 
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.domain.user.UserTestFactory;
 import com.smalaca.taskamanager.dto.EpicDto;
@@ -40,7 +42,8 @@ class EpicApplicationServiceTest {
     private final EpicRepository epicRepository = mock(EpicRepository.class);
     private final ProjectRepository projectRepository = mock(ProjectRepository.class);
     private final UserRepository userRepository = mock(UserRepository.class);
-    private final EpicApplicationService service = new EpicApplicationServiceFactory().epicApplicationService(epicRepository, projectRepository, userRepository);
+    private final UserDomainRepository userDomainRepository = new TaskManagerAntiCorruptionLayer(null, userRepository, null);
+    private final EpicApplicationService service = new EpicApplicationServiceFactory().epicApplicationService(epicRepository, projectRepository, userDomainRepository);
 
     @Test
     void shouldRecognizeProjectDoesNotExist() {

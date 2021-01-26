@@ -42,6 +42,16 @@ public class TaskManagerAntiCorruptionLayer implements TeamDomainRepository, Use
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return userRepository.findById(id).isPresent();
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).get();
+    }
+
+    @Override
     public boolean doesNotExistByFirstAndLastName(String firstName, String lastName) {
         return productOwnerRepository.findByFirstNameAndLastName(firstName, lastName).isEmpty();
     }

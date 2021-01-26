@@ -1,20 +1,19 @@
 package com.smalaca.taskamanager.domain.epic;
 
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.EpicDto;
+import com.smalaca.taskamanager.model.embedded.Owner;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.User;
-import com.smalaca.taskamanager.repository.UserRepository;
-
-import java.util.Optional;
 
 import static com.smalaca.taskamanager.domain.epic.EpicBuilder.epic;
 
 public class EpicFactory {
-    private final UserRepository userRepository;
+    private final UserDomainRepository userRepository;
 
-    public EpicFactory(UserRepository userRepository) {
+    public EpicFactory(UserDomainRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -25,7 +24,8 @@ public class EpicFactory {
             .withStatus(dto.getStatus());
 
         if (dto.hasOwnerId()) {
-            builder.withOwner(getUser(dto).asOwner());
+            Owner owner = getUser(dto.getOwnerId()).asOwner();
+            builder.withOwner(owner);
         }
 
         builder.withProject(project);
@@ -33,13 +33,11 @@ public class EpicFactory {
         return builder.build();
     }
 
-    private User getUser(EpicDto dto) {
-        Optional<User> found = userRepository.findById(dto.getOwnerId());
-
-        if (found.isEmpty()) {
-            throw UserException.notFound(dto.getOwnerId());
+    private User getUser(Long ownerId) {
+        if (userRepository.existsById(ownerId)) {
+            return userRepository.findById(ownerId);
         } else {
-            return found.get();
+            throw UserException.notFound(ownerId);
         }
     }
 }
