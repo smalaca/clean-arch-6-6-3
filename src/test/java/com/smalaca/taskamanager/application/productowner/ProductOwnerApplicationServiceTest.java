@@ -31,18 +31,18 @@ class ProductOwnerApplicationServiceTest {
         Long id = service.create(givenDto());
 
         assertThat(id).isEqualTo(PRODUCT_OWNER_ID);
-        then(repository).should().save(captor.capture());
+        then(repository).should().saveProductOwner(captor.capture());
         ProductOwner actual = captor.getValue();
         assertThat(actual.getFirstName()).isEqualTo(FIRST_NAME);
         assertThat(actual.getLastName()).isEqualTo(LAST_NAME);
     }
 
     private void givenSavedProductOwner() {
-        given(repository.save(any())).willReturn(PRODUCT_OWNER_ID);
+        given(repository.saveProductOwner(any())).willReturn(PRODUCT_OWNER_ID);
     }
 
     private void givenNonExistingProductOwner() {
-        given(repository.doesNotExistByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(true);
+        given(repository.doesProductOwnerNotExistByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(true);
     }
 
     @Test
@@ -55,7 +55,7 @@ class ProductOwnerApplicationServiceTest {
     }
 
     private void givenExistingProductOwner() {
-        given(repository.doesNotExistByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(false);
+        given(repository.doesProductOwnerNotExistByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(false);
     }
 
     private NewProductOwnerDto givenDto() {

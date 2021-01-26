@@ -41,7 +41,7 @@ public class ProductOwnerController {
     public ProductOwnerController(ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository) {
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
-        TaskManagerAntiCorruptionLayer antiCorruptionLayer = new TaskManagerAntiCorruptionLayer(null, null, productOwnerRepository);
+        TaskManagerAntiCorruptionLayer antiCorruptionLayer = new TaskManagerAntiCorruptionLayer(null, null, productOwnerRepository, null);
         service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(antiCorruptionLayer);
     }
 

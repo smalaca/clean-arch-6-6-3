@@ -34,8 +34,8 @@ public class EpicFactory {
     }
 
     private User getUser(Long ownerId) {
-        if (userRepository.existsById(ownerId)) {
-            return userRepository.findById(ownerId);
+        if (userRepository.existsUserById(ownerId)) {
+            return userRepository.findUserById(ownerId);
         } else {
             throw UserException.notFound(ownerId);
         }

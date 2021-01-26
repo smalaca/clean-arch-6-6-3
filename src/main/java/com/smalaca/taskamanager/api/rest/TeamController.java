@@ -45,7 +45,7 @@ public class TeamController {
     public TeamController(TeamRepository teamRepository, UserRepository userRepository) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
-        teamApplicationService = new TeamApplicationServiceFactory().teamApplicationService(new TaskManagerAntiCorruptionLayer(teamRepository, null, null));
+        teamApplicationService = new TeamApplicationServiceFactory().teamApplicationService(new TaskManagerAntiCorruptionLayer(teamRepository, null, null, null));
     }
 
     @GetMapping

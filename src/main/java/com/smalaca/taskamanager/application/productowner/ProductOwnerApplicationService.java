@@ -17,6 +17,6 @@ public class ProductOwnerApplicationService {
     public Long create(NewProductOwnerDto dto) {
         ProductOwner productOwner = factory.create(dto);
 
-        return productOwnerRepository.save(productOwner);
+        return productOwnerRepository.saveProductOwner(productOwner);
     }
 }

@@ -16,6 +16,6 @@ public class TeamApplicationService {
     public Long create(String name) {
         Team team = teamFactory.create(name);
 
-        return teamRepository.save(team);
+        return teamRepository.saveTeam(team);
     }
 }

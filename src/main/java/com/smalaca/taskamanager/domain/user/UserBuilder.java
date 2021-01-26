@@ -26,7 +26,7 @@ public class UserBuilder {
     }
 
     private boolean userDoesNotExist(UserDomainRepository userRepository) {
-        return userRepository.doesNotExistsByFirstAndLastName(firstName, lastName);
+        return userRepository.doesUserNotExistsByFirstAndLastName(firstName, lastName);
     }
 
     public UserBuilder withTeamRole(String teamRole) {

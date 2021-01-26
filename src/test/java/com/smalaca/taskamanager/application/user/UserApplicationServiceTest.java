@@ -35,19 +35,19 @@ class UserApplicationServiceTest {
     }
 
     private void givenExistingUser() {
-        given(repository.doesNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(false);
+        given(repository.doesUserNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(false);
     }
 
     @Test
     void shouldCreateUser() {
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         givenNonExistingUser();
-        given(repository.save(any())).willReturn(USER_ID);
+        given(repository.saveUser(any())).willReturn(USER_ID);
 
         Long id = service.create(givenUserDto());
 
         assertThat(id).isEqualTo(USER_ID);
-        then(repository).should().save(captor.capture());
+        then(repository).should().saveUser(captor.capture());
         User actual = captor.getValue();
         assertThat(actual.getUserName().getFirstName()).isEqualTo(FIRST_NAME);
         assertThat(actual.getUserName().getLastName()).isEqualTo(LAST_NAME);
@@ -57,7 +57,7 @@ class UserApplicationServiceTest {
     }
 
     private void givenNonExistingUser() {
-        given(repository.doesNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(true);
+        given(repository.doesUserNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(true);
     }
 
     private UserDto givenUserDto() {

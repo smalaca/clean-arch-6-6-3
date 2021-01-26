@@ -10,7 +10,7 @@ public class ProductOwnerFactory {
     }
 
     public ProductOwner create(NewProductOwnerDto dto) {
-        if (productOwnerRepository.doesNotExistByFirstAndLastName(dto.getFirstName(), dto.getLastName())) {
+        if (productOwnerRepository.doesProductOwnerNotExistByFirstAndLastName(dto.getFirstName(), dto.getLastName())) {
             ProductOwner productOwner = new ProductOwner();
             productOwner.setFirstName(dto.getFirstName());
             productOwner.setLastName(dto.getLastName());
