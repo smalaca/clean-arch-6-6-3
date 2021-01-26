@@ -1,16 +1,11 @@
 package com.smalaca.taskamanager.application.productowner;
 
-import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.domain.productowner.NewProductOwnerDto;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
-import com.smalaca.taskamanager.domain.productowner.ProductOwnerTestFactory;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
-import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,10 +17,10 @@ import static org.mockito.Mockito.mock;
 class ProductOwnerApplicationServiceTest {
     private static final String FIRST_NAME = "Tony";
     private static final String LAST_NAME = "Stark";
+    private static final long PRODUCT_OWNER_ID = 987L;
 
-    private final ProductOwnerRepository repository = mock(ProductOwnerRepository.class);
-    private final ProductOwnerDomainRepository productOwnerDomainRepository = new TaskManagerAntiCorruptionLayer(null, null, repository);
-    private final ProductOwnerApplicationService service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(productOwnerDomainRepository);
+    private final ProductOwnerDomainRepository repository = mock(ProductOwnerDomainRepository.class);
+    private final ProductOwnerApplicationService service = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(repository);
 
     @Test
     void shouldCreateProductOwner() {
@@ -35,7 +30,7 @@ class ProductOwnerApplicationServiceTest {
 
         Long id = service.create(givenDto());
 
-        assertThat(id).isNull();
+        assertThat(id).isEqualTo(PRODUCT_OWNER_ID);
         then(repository).should().save(captor.capture());
         ProductOwner actual = captor.getValue();
         assertThat(actual.getFirstName()).isEqualTo(FIRST_NAME);
@@ -43,12 +38,11 @@ class ProductOwnerApplicationServiceTest {
     }
 
     private void givenSavedProductOwner() {
-        ProductOwner savedProductOwner = ProductOwnerTestFactory.create(FIRST_NAME, LAST_NAME);
-        given(repository.save(any())).willReturn(savedProductOwner);
+        given(repository.save(any())).willReturn(PRODUCT_OWNER_ID);
     }
 
     private void givenNonExistingProductOwner() {
-        given(repository.findByFirstNameAndLastName(FIRST_NAME, LAST_NAME)).willReturn(Optional.empty());
+        given(repository.doesNotExistByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(true);
     }
 
     @Test
@@ -61,8 +55,7 @@ class ProductOwnerApplicationServiceTest {
     }
 
     private void givenExistingProductOwner() {
-        ProductOwner existing = ProductOwnerTestFactory.create(FIRST_NAME, LAST_NAME);
-        given(repository.findByFirstNameAndLastName(FIRST_NAME, LAST_NAME)).willReturn(Optional.of(existing));
+        given(repository.doesNotExistByFirstAndLastName(FIRST_NAME, LAST_NAME)).willReturn(false);
     }
 
     private NewProductOwnerDto givenDto() {
