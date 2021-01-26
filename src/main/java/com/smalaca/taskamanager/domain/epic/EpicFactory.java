@@ -17,7 +17,8 @@ public class EpicFactory {
         this.userRepository = userRepository;
     }
 
-    public Epic create(EpicDto dto, Project project) {EpicBuilder builder = epic()
+    public Epic create(EpicDto dto, Project project) {
+        EpicBuilder builder = epic()
             .withTitle(dto.getTitle())
             .withDescription(dto.getDescription())
             .withStatus(dto.getStatus());
@@ -27,8 +28,8 @@ public class EpicFactory {
         }
 
         builder.withProject(project);
-        Epic epic = builder.build();
-        return epic;
+
+        return builder.build();
     }
 
     private User getUser(EpicDto dto) {
