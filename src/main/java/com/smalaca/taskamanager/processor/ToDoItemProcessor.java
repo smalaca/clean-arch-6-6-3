@@ -44,18 +44,10 @@ public class ToDoItemProcessor {
     public void processFor(ToDoItem toDoItem) {
         initToDoItemStates();
 
-        switch (toDoItem.getStatus()) {
-            case DEFINED:
-                processDefined(toDoItem);
-                break;
-
-            case IN_PROGRESS:
-                processInProgress(toDoItem);
-                break;
-
-            default:
-                states.get(toDoItem.getStatus()).process(toDoItem);
-                break;
+        if (toDoItem.getStatus() == ToDoItemStatus.DEFINED) {
+            processDefined(toDoItem);
+        } else {
+            states.get(toDoItem.getStatus()).process(toDoItem);
         }
     }
 
@@ -91,13 +83,6 @@ public class ToDoItemProcessor {
                     throw new UnsupportedToDoItemType();
                 }
             }
-        }
-    }
-
-    private void processInProgress(ToDoItem toDoItem) {
-        if (toDoItem instanceof Task) {
-            Task task = (Task) toDoItem;
-            storyService.updateProgressOf(task.getStory(), task);
         }
     }
 }
