@@ -1,6 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
-import com.smalaca.taskamanager.application.productowner.NewProductOwnerDto;
+import com.smalaca.taskamanager.application.productowner.ProductOwnerApplicationServiceFactory;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerException;
 import com.smalaca.taskamanager.dto.ProductOwnerDto;
 import com.smalaca.taskamanager.exception.ProductOwnerNotFoundException;
@@ -70,26 +70,13 @@ public class ProductOwnerController {
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody ProductOwnerDto dto, UriComponentsBuilder uriComponentsBuilder) {
         try {
-            Long id = create(dto.asNewProductOwnerDto());
+            Long id = new ProductOwnerApplicationServiceFactory().productOwnerApplicationService(productOwnerRepository).create(dto.asNewProductOwnerDto());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(uriComponentsBuilder.path("/product-owner/{id}").buildAndExpand(id).toUri());
             return new ResponseEntity<>(headers, HttpStatus.CREATED);
         } catch (ProductOwnerException exception) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    }
-
-    private Long create(NewProductOwnerDto dto) {
-        if (productOwnerRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName()).isEmpty()) {
-            ProductOwner productOwner = new ProductOwner();
-            productOwner.setFirstName(dto.getFirstName());
-            productOwner.setLastName(dto.getLastName());
-            ProductOwner saved = productOwnerRepository.save(productOwner);
-
-            return saved.getId();
-        } else {
-            throw ProductOwnerException.productOwnerAlreadyExists(dto.getFirstName(), dto.getLastName());
         }
     }
 
