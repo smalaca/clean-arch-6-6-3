@@ -2,10 +2,10 @@ package com.smalaca.taskamanager.application.user;
 
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.UserDto;
-import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.User;
-import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.repository.UserRepository;
+
+import static com.smalaca.taskamanager.domain.user.UserBuilder.user;
 
 public class UserApplicationService {
     private final UserRepository userRepository;
@@ -16,14 +16,12 @@ public class UserApplicationService {
 
     public Long create(UserDto userDto) {
         if (doesNotExist(userDto)) {
-            User user = new User();
-            user.setTeamRole(TeamRole.valueOf(userDto.getTeamRole()));
-            UserName userName = new UserName();
-            userName.setFirstName(userDto.getFirstName());
-            userName.setLastName(userDto.getLastName());
-            user.setUserName(userName);
-            user.setLogin(userDto.getLogin());
-            user.setPassword(userDto.getPassword());
+            User user = user()
+                    .withTeamRole(userDto.getTeamRole())
+                    .withUserName(userDto.getFirstName(), userDto.getLastName())
+                    .withLogin(userDto.getLogin())
+                    .withPassword(userDto.getPassword())
+                    .build();
 
             return userRepository.save(user).getId();
         } else {
@@ -32,10 +30,6 @@ public class UserApplicationService {
     }
 
     private boolean doesNotExist(UserDto userDto) {
-        return !exists(userDto);
-    }
-
-    private boolean exists(UserDto userDto) {
-        return !userRepository.findByUserNameFirstNameAndUserNameLastName(userDto.getFirstName(), userDto.getLastName()).isEmpty();
+        return userRepository.findByUserNameFirstNameAndUserNameLastName(userDto.getFirstName(), userDto.getLastName()).isEmpty();
     }
 }
