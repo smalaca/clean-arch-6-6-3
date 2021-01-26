@@ -1,9 +1,7 @@
 package com.smalaca.taskamanager.processor;
 
 import com.smalaca.taskamanager.events.EpicReadyToPrioritize;
-import com.smalaca.taskamanager.events.StoryApprovedEvent;
 import com.smalaca.taskamanager.events.StoryDoneEvent;
-import com.smalaca.taskamanager.events.TaskApprovedEvent;
 import com.smalaca.taskamanager.exception.UnsupportedToDoItemType;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Story;
@@ -14,6 +12,7 @@ import com.smalaca.taskamanager.service.CommunicationService;
 import com.smalaca.taskamanager.service.ProjectBacklogService;
 import com.smalaca.taskamanager.service.SprintBacklogService;
 import com.smalaca.taskamanager.service.StoryService;
+import com.smalaca.taskamanager.todoitemstate.ToDoItemReleasedApproved;
 import com.smalaca.taskamanager.todoitemstate.ToDoItemReleasedState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -122,22 +121,7 @@ public class ToDoItemProcessor {
     }
 
     private void processApproved(ToDoItem toDoItem) {
-        if (toDoItem instanceof Story) {
-            Story story = (Story) toDoItem;
-            StoryApprovedEvent event = new StoryApprovedEvent();
-            event.setStoryId(story.getId());
-            eventsRegistry.publish(event);
-        } else if (toDoItem instanceof Task) {
-            Task task = (Task) toDoItem;
-
-            if (task.isSubtask()) {
-                TaskApprovedEvent event = new TaskApprovedEvent();
-                event.setTaskId(task.getId());
-                eventsRegistry.publish(event);
-            } else {
-                storyService.attachPartialApprovalFor(task.getStory().getId(), task.getId());
-            }
-        }
+        new ToDoItemReleasedApproved(storyService, eventsRegistry).process(toDoItem);
     }
 
     private void processReleased(ToDoItem toDoItem) {
