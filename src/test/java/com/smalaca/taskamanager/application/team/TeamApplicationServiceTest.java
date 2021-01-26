@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.application.team;
 
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.domain.team.TeamException;
 import com.smalaca.taskamanager.domain.team.TeamTestFactory;
 import com.smalaca.taskamanager.model.entities.Team;
@@ -20,7 +21,8 @@ class TeamApplicationServiceTest {
     private static final String TEAM_NAME = "Avengers";
 
     private final TeamRepository repository = mock(TeamRepository.class);
-    private final TeamApplicationService service = new TeamApplicationServiceFactory().teamApplicationService(repository);
+    private final TaskManagerAntiCorruptionLayer antiCorruptionLayer = new TaskManagerAntiCorruptionLayer(repository);
+    private final TeamApplicationService service = new TeamApplicationServiceFactory().teamApplicationService(antiCorruptionLayer);
 
     @Test
     void shouldCreateTeam() {

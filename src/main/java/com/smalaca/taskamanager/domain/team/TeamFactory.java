@@ -1,17 +1,16 @@
 package com.smalaca.taskamanager.domain.team;
 
 import com.smalaca.taskamanager.model.entities.Team;
-import com.smalaca.taskamanager.repository.TeamRepository;
 
 public class TeamFactory {
-    private final TeamRepository teamRepository;
+    private final TeamDomainRepository teamRepository;
 
-    public TeamFactory(TeamRepository teamRepository) {
+    public TeamFactory(TeamDomainRepository teamRepository) {
         this.teamRepository = teamRepository;
     }
 
     public Team create(String name) {
-        if (teamRepository.findByName(name).isEmpty()){
+        if (teamRepository.doesNotExistByName(name)){
             Team team = new Team();
             team.setName(name);
             return team;
