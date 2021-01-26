@@ -1,5 +1,7 @@
 package com.smalaca.taskamanager.application.user;
 
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.domain.user.UserTestFactory;
 import com.smalaca.taskamanager.dto.UserDto;
@@ -26,7 +28,8 @@ class UserApplicationServiceTest {
     private static final String PASSWORD = "w3bRUL3Z";
 
     private final UserRepository repository = mock(UserRepository.class);
-    private final UserApplicationService service = new UserApplicationService(repository);
+    private final UserDomainRepository userRepository = new TaskManagerAntiCorruptionLayer(null, repository);
+    private final UserApplicationService service = new UserApplicationService(userRepository);
 
     @Test
     void shouldRecognizeCreatedUserAlreadyExists() {
