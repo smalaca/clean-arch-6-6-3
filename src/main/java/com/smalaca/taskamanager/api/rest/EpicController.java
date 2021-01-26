@@ -50,8 +50,8 @@ public class EpicController {
     private final EpicRepository epicRepository;
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
-    private final ProjectRepository projectRepository;
     private final ToDoItemService toDoItemService;
+    private final EpicApplicationService epicApplicationService;
 
     public EpicController(
             EpicRepository epicRepository, UserRepository userRepository, TeamRepository teamRepository,
@@ -59,8 +59,8 @@ public class EpicController {
         this.epicRepository = epicRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
-        this.projectRepository = projectRepository;
         this.toDoItemService = toDoItemService;
+        epicApplicationService = new EpicApplicationService(epicRepository, projectRepository, userRepository);
     }
 
     @Transactional
@@ -149,7 +149,7 @@ public class EpicController {
     @PostMapping
     public ResponseEntity<Long> create(@RequestBody EpicDto dto) {
         try {
-            Long id = new EpicApplicationService(epicRepository, projectRepository, userRepository).create(dto);
+            Long id = epicApplicationService.create(dto);
             return ResponseEntity.ok(id);
         } catch (ProjectNotFoundException | UserException exception) {
             return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
