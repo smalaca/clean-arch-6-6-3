@@ -1,5 +1,7 @@
 package com.smalaca.taskamanager.anticorruptionlayer;
 
+import com.smalaca.taskamanager.domain.epic.EpicDomain;
+import com.smalaca.taskamanager.domain.epic.EpicDomainDto;
 import com.smalaca.taskamanager.domain.epic.EpicDomainRepository;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
@@ -14,6 +16,7 @@ import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.Team;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.TeamRole;
+import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
@@ -104,7 +107,15 @@ public class TaskManagerAntiCorruptionLayer implements
     }
 
     @Override
-    public Long saveEpic(Epic epic) {
+    public Long saveEpic(EpicDomain epicDomain) {
+        EpicDomainDto dto = epicDomain.asDto();
+        Epic epic = new Epic();
+        epic.assignProject(dto.getProject());
+        epic.setOwner(dto.getOwner());
+        epic.setTitle(dto.getTitle());
+        epic.setDescription(dto.getDescription());
+        epic.setStatus(ToDoItemStatus.valueOf(dto.getToDoItemStatus()));
+
         return epicRepository.save(epic).getId();
     }
 }

@@ -4,11 +4,10 @@ import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.model.embedded.Owner;
-import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.User;
 
-import static com.smalaca.taskamanager.domain.epic.EpicBuilder.epic;
+import static com.smalaca.taskamanager.domain.epic.EpicDomain.Builder.epic;
 
 public class EpicFactory {
     private final UserDomainRepository userRepository;
@@ -17,8 +16,8 @@ public class EpicFactory {
         this.userRepository = userRepository;
     }
 
-    public Epic create(EpicDto dto, Project project) {
-        EpicBuilder builder = epic()
+    public EpicDomain create(EpicDto dto, Project project) {
+        EpicDomain.Builder builder = epic()
             .withTitle(dto.getTitle())
             .withDescription(dto.getDescription())
             .withStatus(dto.getStatus());
