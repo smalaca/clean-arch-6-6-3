@@ -4,6 +4,8 @@ import com.smalaca.taskamanager.domain.epic.EpicDomain;
 import com.smalaca.taskamanager.domain.epic.EpicDomainDto;
 import com.smalaca.taskamanager.domain.epic.EpicDomainRepository;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository;
+import com.smalaca.taskamanager.domain.project.ProjectDomain;
+import com.smalaca.taskamanager.domain.project.ProjectDomainDto;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
 import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomain;
@@ -92,7 +94,9 @@ public class TaskManagerAntiCorruptionLayer implements
     }
 
     @Override
-    public void saveProject(Project project) {
+    public void saveProject(ProjectDomain projectDomain) {
+        Project project = findProject(projectDomain.asDto().getId());
+
         projectRepository.save(project);
     }
 
@@ -102,20 +106,28 @@ public class TaskManagerAntiCorruptionLayer implements
     }
 
     @Override
-    public Project findProjectById(Long projectId) {
-        return projectRepository.findById(projectId).get();
+    public ProjectDomain findProjectById(Long projectId) {
+        Project project = findProject(projectId);
+        ProjectDomainDto dto = ProjectDomainDto.builder()
+                .id(project.getId())
+                .build();
+        return new ProjectDomain(dto);
     }
 
     @Override
     public Long saveEpic(EpicDomain epicDomain) {
         EpicDomainDto dto = epicDomain.asDto();
         Epic epic = new Epic();
-        epic.assignProject(dto.getProject());
+        epic.assignProject(findProject(dto.getProject().getId()));
         epic.setOwner(dto.getOwner());
         epic.setTitle(dto.getTitle());
         epic.setDescription(dto.getDescription());
         epic.setStatus(ToDoItemStatus.valueOf(dto.getToDoItemStatus()));
 
         return epicRepository.save(epic).getId();
+    }
+
+    private Project findProject(Long projectId) {
+        return projectRepository.findById(projectId).get();
     }
 }

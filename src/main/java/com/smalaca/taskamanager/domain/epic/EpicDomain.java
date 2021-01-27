@@ -1,13 +1,13 @@
 package com.smalaca.taskamanager.domain.epic;
 
+import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.model.embedded.Owner;
-import com.smalaca.taskamanager.model.entities.Project;
 
 public class EpicDomain {
     private final String title;
     private final String description;
     private ToDoItemStatus toDoItemStatus;
-    private final Project project;
+    private final ProjectDomain project;
     private Owner owner;
 
     private EpicDomain(Builder builder) {
@@ -23,7 +23,7 @@ public class EpicDomain {
                 .title(title)
                 .description(description)
                 .toDoItemStatus(toDoItemStatus.name())
-                .project(project)
+                .project(project.asDto())
                 .owner(owner)
                 .build();
     }
@@ -33,7 +33,7 @@ public class EpicDomain {
         private String description;
         private ToDoItemStatus toDoItemStatus;
         private Owner owner;
-        private Project project;
+        private ProjectDomain project;
 
         private Builder() {}
 
@@ -60,7 +60,7 @@ public class EpicDomain {
             this.owner = owner;
         }
 
-        void withProject(Project project) {
+        void withProject(ProjectDomain project) {
             this.project = project;
         }
 
