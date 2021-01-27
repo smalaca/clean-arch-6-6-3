@@ -3,6 +3,7 @@ package com.smalaca.taskamanager.anticorruptionlayer;
 import com.smalaca.taskamanager.domain.epic.EpicDomain;
 import com.smalaca.taskamanager.domain.epic.EpicDomainDto;
 import com.smalaca.taskamanager.domain.epic.EpicDomainRepository;
+import com.smalaca.taskamanager.domain.owner.OwnerDomainDto;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository;
 import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomainDto;
@@ -11,6 +12,9 @@ import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainDto;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
+import com.smalaca.taskamanager.model.embedded.EmailAddress;
+import com.smalaca.taskamanager.model.embedded.Owner;
+import com.smalaca.taskamanager.model.embedded.PhoneNumber;
 import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
@@ -79,8 +83,19 @@ public class TaskManagerAntiCorruptionLayer implements
     }
 
     @Override
-    public User findUserById(Long id) {
-        return userRepository.findById(id).get();
+    public UserDomain findUserById(Long id) {
+        User user = userRepository.findById(id).get();
+        UserDomainDto dto = UserDomainDto.builder()
+                .login(user.getLogin())
+                .password(user.getPassword())
+                .teamRole(user.getTeamRole().name())
+                .firstName(user.getUserName().getFirstName())
+                .lastName(user.getUserName().getLastName())
+                .emailAddress(user.getEmailAddress().getEmailAddress())
+                .phoneNumber(user.getPhoneNumber().getNumber())
+                .phonePrefix(user.getPhoneNumber().getPrefix())
+                .build();
+        return new UserDomain(dto);
     }
 
     @Override
@@ -119,12 +134,34 @@ public class TaskManagerAntiCorruptionLayer implements
         EpicDomainDto dto = epicDomain.asDto();
         Epic epic = new Epic();
         epic.assignProject(findProject(dto.getProject().getId()));
-        epic.setOwner(dto.getOwner());
+        epic.setOwner(asOwner(dto.getOwner()));
         epic.setTitle(dto.getTitle());
         epic.setDescription(dto.getDescription());
         epic.setStatus(ToDoItemStatus.valueOf(dto.getToDoItemStatus()));
 
         return epicRepository.save(epic).getId();
+    }
+
+    private Owner asOwner(OwnerDomainDto dto) {
+        Owner owner = new Owner();
+        owner.setFirstName(dto.getFirstName());
+        owner.setLastName(dto.getLastName());
+        owner.setEmailAddress(emailAddress(dto.getEmailAddress()));
+        owner.setPhoneNumber(phoneNumber(dto));
+        return owner;
+    }
+
+    private PhoneNumber phoneNumber(OwnerDomainDto dto) {
+        PhoneNumber phoneNumber = new PhoneNumber();
+        phoneNumber.setNumber(dto.getPhoneNumber());
+        phoneNumber.setPrefix(dto.getPhonePrefix());
+        return phoneNumber;
+    }
+
+    private EmailAddress emailAddress(String emailAddress) {
+        EmailAddress address = new EmailAddress();
+        address.setEmailAddress(emailAddress);
+        return address;
     }
 
     private Project findProject(Long projectId) {

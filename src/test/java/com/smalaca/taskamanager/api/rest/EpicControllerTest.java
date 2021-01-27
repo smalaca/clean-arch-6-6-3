@@ -15,6 +15,7 @@ import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.Team;
 import com.smalaca.taskamanager.model.entities.User;
+import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
@@ -657,6 +658,7 @@ class EpicControllerTest {
 
     private User user(long id, String firstName, String lastName, String email, String prefix, String number) {
         User user = withId(new User(), id);
+        user.setTeamRole(TeamRole.DEVELOPER);
         UserName userName = new UserName();
         userName.setFirstName(firstName);
         userName.setLastName(lastName);

@@ -1,11 +1,11 @@
 package com.smalaca.taskamanager.domain.epic;
 
+import com.smalaca.taskamanager.domain.owner.OwnerDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomain;
+import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.EpicDto;
-import com.smalaca.taskamanager.model.embedded.Owner;
-import com.smalaca.taskamanager.model.entities.User;
 
 import static com.smalaca.taskamanager.domain.epic.EpicDomain.Builder.epic;
 
@@ -23,7 +23,7 @@ public class EpicFactory {
             .withStatus(dto.getStatus());
 
         if (dto.hasOwnerId()) {
-            Owner owner = getUser(dto.getOwnerId()).asOwner();
+            OwnerDomain owner = getUser(dto.getOwnerId()).asOwner();
             builder.withOwner(owner);
         }
 
@@ -32,7 +32,7 @@ public class EpicFactory {
         return builder.build();
     }
 
-    private User getUser(Long ownerId) {
+    private UserDomain getUser(Long ownerId) {
         if (userRepository.existsUserById(ownerId)) {
             return userRepository.findUserById(ownerId);
         } else {
