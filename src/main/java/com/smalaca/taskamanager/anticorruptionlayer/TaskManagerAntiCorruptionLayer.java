@@ -4,12 +4,16 @@ import com.smalaca.taskamanager.domain.epic.EpicDomainRepository;
 import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
 import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
+import com.smalaca.taskamanager.domain.user.UserDomain;
+import com.smalaca.taskamanager.domain.user.UserDomainDto;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
+import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
 import com.smalaca.taskamanager.model.entities.Project;
 import com.smalaca.taskamanager.model.entities.Team;
 import com.smalaca.taskamanager.model.entities.User;
+import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
@@ -45,7 +49,17 @@ public class TaskManagerAntiCorruptionLayer implements
     }
 
     @Override
-    public Long saveUser(User user) {
+    public Long saveUser(UserDomain userDomain) {
+        UserDomainDto userDomainDto = userDomain.asDto();
+        User user = new User();
+        user.setLogin(userDomainDto.getLogin());
+        user.setPassword(userDomainDto.getPassword());
+        user.setTeamRole(TeamRole.valueOf(userDomainDto.getTeamRole()));
+        UserName userName = new UserName();
+        userName.setFirstName(userDomainDto.getFirstName());
+        userName.setLastName(userDomainDto.getLastName());
+        user.setUserName(userName);
+
         return userRepository.save(user).getId();
     }
 

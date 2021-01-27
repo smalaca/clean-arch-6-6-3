@@ -89,9 +89,9 @@ class UserControllerTest {
 
         ResponseEntity<Void> response = controller.createUser(user, uriComponentsBuilder);
 
+        assertThatUserWasCreated("Natasha", "Romanow", response.getHeaders());
         assertThat(response.getStatusCode()).isEqualTo(CREATED);
         assertThat(response.getHeaders().getLocation().getPath()).matches("/user/[0-9a-z\\-]+");
-        assertThatUserWasCreated("Natasha", "Romanow", response.getHeaders());
     }
 
     private UserDto givenUserWithFirstAndLastName(String firstName, String lastName) {
