@@ -6,7 +6,7 @@ import com.smalaca.taskamanager.model.entities.Project;
 public class EpicDomain {
     private final String title;
     private final String description;
-    private final String toDoItemStatus;
+    private ToDoItemStatus toDoItemStatus;
     private final Project project;
     private Owner owner;
 
@@ -22,7 +22,7 @@ public class EpicDomain {
         return EpicDomainDto.builder()
                 .title(title)
                 .description(description)
-                .toDoItemStatus(toDoItemStatus)
+                .toDoItemStatus(toDoItemStatus.name())
                 .project(project)
                 .owner(owner)
                 .build();
@@ -31,7 +31,7 @@ public class EpicDomain {
     static class Builder {
         private String title;
         private String description;
-        private String toDoItemStatus;
+        private ToDoItemStatus toDoItemStatus;
         private Owner owner;
         private Project project;
 
@@ -52,7 +52,7 @@ public class EpicDomain {
         }
 
         Builder withStatus(String toDoItemStatus) {
-            this.toDoItemStatus = toDoItemStatus;
+            this.toDoItemStatus = ToDoItemStatus.valueOf(toDoItemStatus);
             return this;
         }
 
