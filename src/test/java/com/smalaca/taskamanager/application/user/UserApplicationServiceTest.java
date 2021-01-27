@@ -1,13 +1,13 @@
 package com.smalaca.taskamanager.application.user;
 
+import com.smalaca.taskamanager.domain.user.UserDomain;
+import com.smalaca.taskamanager.domain.user.UserDomainDto;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.UserDto;
-import com.smalaca.taskamanager.model.entities.User;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import static com.smalaca.taskamanager.model.enums.TeamRole.DEVELOPER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +40,7 @@ class UserApplicationServiceTest {
 
     @Test
     void shouldCreateUser() {
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<UserDomain> captor = ArgumentCaptor.forClass(UserDomain.class);
         givenNonExistingUser();
         given(repository.saveUser(any())).willReturn(USER_ID);
 
@@ -48,10 +48,10 @@ class UserApplicationServiceTest {
 
         assertThat(id).isEqualTo(USER_ID);
         then(repository).should().saveUser(captor.capture());
-        User actual = captor.getValue();
-        assertThat(actual.getUserName().getFirstName()).isEqualTo(FIRST_NAME);
-        assertThat(actual.getUserName().getLastName()).isEqualTo(LAST_NAME);
-        assertThat(actual.getTeamRole()).isEqualTo(DEVELOPER);
+        UserDomainDto actual = captor.getValue().asDto();
+        assertThat(actual.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(actual.getLastName()).isEqualTo(LAST_NAME);
+        assertThat(actual.getTeamRole()).isEqualTo(TEAM_ROLE);
         assertThat(actual.getLogin()).isEqualTo(LOGIN);
         assertThat(actual.getPassword()).isEqualTo(PASSWORD);
     }

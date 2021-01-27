@@ -1,10 +1,9 @@
 package com.smalaca.taskamanager.application.user;
 
+import com.smalaca.taskamanager.domain.user.UserBuilder;
+import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.dto.UserDto;
-import com.smalaca.taskamanager.model.entities.User;
-
-import static com.smalaca.taskamanager.domain.user.UserBuilder.user;
 
 public class UserApplicationService {
     private final UserDomainRepository userRepository;
@@ -14,7 +13,7 @@ public class UserApplicationService {
     }
 
     public Long create(UserDto userDto) {
-        User user = user()
+        UserDomain user = UserBuilder.user()
                 .withTeamRole(userDto.getTeamRole())
                 .withUserName(userDto.getFirstName(), userDto.getLastName())
                 .withLogin(userDto.getLogin())

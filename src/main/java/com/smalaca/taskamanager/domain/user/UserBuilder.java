@@ -1,28 +1,30 @@
 package com.smalaca.taskamanager.domain.user;
 
-import com.smalaca.taskamanager.model.embedded.UserName;
-import com.smalaca.taskamanager.model.entities.User;
-import com.smalaca.taskamanager.model.enums.TeamRole;
-
 public class UserBuilder {
-    private final User user;
     private String firstName;
     private String lastName;
-
-    private UserBuilder(User user) {
-        this.user = user;
-    }
+    private String teamRole;
+    private String login;
+    private String password;
 
     public static UserBuilder user() {
-        return new UserBuilder(new User());
+        return new UserBuilder();
     }
 
-    public User build(UserDomainRepository userRepository) {
+    public UserDomain build(UserDomainRepository userRepository) {
         if (userDoesNotExist(userRepository)) {
-            return user;
+            return new UserDomain(login, password, userName(), teamRole());
         } else {
             throw UserException.userAlreadyExists(firstName, lastName);
         }
+    }
+
+    private TeamRole teamRole() {
+        return TeamRole.valueOf(teamRole);
+    }
+
+    private UserName userName() {
+        return new UserName(firstName, lastName);
     }
 
     private boolean userDoesNotExist(UserDomainRepository userRepository) {
@@ -30,31 +32,23 @@ public class UserBuilder {
     }
 
     public UserBuilder withTeamRole(String teamRole) {
-        user.setTeamRole(TeamRole.valueOf(teamRole));
+        this.teamRole = teamRole;
         return this;
     }
 
     public UserBuilder withUserName(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        user.setUserName(userName(firstName, lastName));
         return this;
     }
 
-    private UserName userName(String firstName, String lastName) {
-        UserName userName = new UserName();
-        userName.setFirstName(firstName);
-        userName.setLastName(lastName);
-        return userName;
-    }
-
     public UserBuilder withLogin(String login) {
-        user.setLogin(login);
+        this.login = login;
         return this;
     }
 
     public UserBuilder withPassword(String password) {
-        user.setPassword(password);
+        this.password = password;
         return this;
     }
 }
