@@ -1,12 +1,12 @@
 package com.smalaca.taskamanager.application.epic;
 
+import com.smalaca.taskamanager.domain.epic.EpicDomain;
 import com.smalaca.taskamanager.domain.epic.EpicDomainRepository;
 import com.smalaca.taskamanager.domain.epic.EpicFactory;
+import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.exception.ProjectNotFoundException;
-import com.smalaca.taskamanager.model.entities.Epic;
-import com.smalaca.taskamanager.model.entities.Project;
 
 public class EpicApplicationService {
     private final EpicDomainRepository epicRepository;
@@ -20,15 +20,15 @@ public class EpicApplicationService {
     }
 
     public Long create(EpicDto dto) {
-        Project project = findProject(dto);
+        ProjectDomain project = findProject(dto);
 
-        Epic epic = epicFactory.create(dto, project);
+        EpicDomain epic = epicFactory.create(dto, project);
 
         projectRepository.saveProject(project);
         return epicRepository.saveEpic(epic);
     }
 
-    private Project findProject(EpicDto dto) {
+    private ProjectDomain findProject(EpicDto dto) {
         if (projectRepository.existsProjectById(dto.getProjectId())) {
             return projectRepository.findProjectById(dto.getProjectId());
         }

@@ -1,7 +1,5 @@
 package com.smalaca.taskamanager.domain.user;
 
-import com.smalaca.taskamanager.model.entities.User;
-
 public interface UserDomainRepository {
     Long saveUser(UserDomain user);
 
@@ -9,5 +7,5 @@ public interface UserDomainRepository {
 
     boolean existsUserById(Long id);
 
-    User findUserById(Long id);
+    UserDomain findUserById(Long id);
 }
