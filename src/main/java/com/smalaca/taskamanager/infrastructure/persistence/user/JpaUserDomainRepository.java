@@ -14,21 +14,21 @@ public class JpaUserDomainRepository implements UserDomainRepository {
 
     @Override
     public Long saveUser(UserDomain user) {
-        return null;
+        return repository.save(user).getId();
     }
 
     @Override
     public boolean doesUserNotExistsByFirstAndLastName(String firstName, String lastName) {
-        return false;
+        return !repository.existsByUserNameFirstNameAndUserNameLastName(firstName, lastName);
     }
 
     @Override
     public boolean existsUserById(Long id) {
-        return false;
+        return repository.existsById(id);
     }
 
     @Override
     public UserDomain findUserById(Long id) {
-        return null;
+        return repository.findById(id).get();
     }
 }

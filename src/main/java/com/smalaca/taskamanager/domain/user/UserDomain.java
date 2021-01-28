@@ -91,4 +91,8 @@ public class UserDomain {
     private boolean hasEmailAddress() {
         return emailAddress != null;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

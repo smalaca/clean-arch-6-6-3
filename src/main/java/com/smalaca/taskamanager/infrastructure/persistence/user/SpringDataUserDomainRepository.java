@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 interface SpringDataUserDomainRepository extends CrudRepository<UserDomain, Long> {
+    boolean existsByUserNameFirstNameAndUserNameLastName(String firstName, String lastName);
 }

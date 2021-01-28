@@ -9,18 +9,14 @@ import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomainDto;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomain;
-import com.smalaca.taskamanager.domain.user.UserDomainDto;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.infrastructure.persistence.user.JpaUserDomainRepository;
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
 import com.smalaca.taskamanager.model.embedded.Owner;
 import com.smalaca.taskamanager.model.embedded.PhoneNumber;
-import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
 import com.smalaca.taskamanager.model.entities.Project;
-import com.smalaca.taskamanager.model.entities.User;
-import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProductOwnerRepository;
@@ -48,50 +44,22 @@ public class TaskManagerAntiCorruptionLayer implements UserDomainRepository, Pro
 
     @Override
     public Long saveUser(UserDomain userDomain) {
-        UserDomainDto userDomainDto = userDomain.asDto();
-        User user = new User();
-        user.setLogin(userDomainDto.getLogin());
-        user.setPassword(userDomainDto.getPassword());
-        user.setTeamRole(TeamRole.valueOf(userDomainDto.getTeamRole()));
-        UserName userName = new UserName();
-        userName.setFirstName(userDomainDto.getFirstName());
-        userName.setLastName(userDomainDto.getLastName());
-        user.setUserName(userName);
-        PhoneNumber phoneNumber = new PhoneNumber();
-        phoneNumber.setPrefix(userDomainDto.getPhonePrefix());
-        phoneNumber.setNumber(userDomainDto.getPhoneNumber());
-        user.setPhoneNumber(phoneNumber);
-        EmailAddress emailAddress = new EmailAddress();
-        emailAddress.setEmailAddress(userDomainDto.getEmailAddress());
-        user.setEmailAddress(emailAddress);
-
-        return userRepository.save(user).getId();
+        return jpaUserDomainRepository.saveUser(userDomain);
     }
 
     @Override
     public boolean doesUserNotExistsByFirstAndLastName(String firstName, String lastName) {
-        return userRepository.findByUserNameFirstNameAndUserNameLastName(firstName, lastName).isEmpty();
+        return jpaUserDomainRepository.doesUserNotExistsByFirstAndLastName(firstName, lastName);
     }
 
     @Override
     public boolean existsUserById(Long id) {
-        return userRepository.findById(id).isPresent();
+        return jpaUserDomainRepository.existsUserById(id);
     }
 
     @Override
     public UserDomain findUserById(Long id) {
-        User user = userRepository.findById(id).get();
-        UserDomainDto dto = UserDomainDto.builder()
-                .login(user.getLogin())
-                .password(user.getPassword())
-                .teamRole(user.getTeamRole().name())
-                .firstName(user.getUserName().getFirstName())
-                .lastName(user.getUserName().getLastName())
-                .emailAddress(user.getEmailAddress().getEmailAddress())
-                .phoneNumber(user.getPhoneNumber().getNumber())
-                .phonePrefix(user.getPhoneNumber().getPrefix())
-                .build();
-        return new UserDomain(dto);
+        return jpaUserDomainRepository.findUserById(id);
     }
 
     @Override
