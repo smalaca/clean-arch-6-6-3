@@ -69,7 +69,7 @@ class EpicControllerTest {
     private final ToDoItemService toDoItemService = mock(ToDoItemService.class);
     private final EpicController controller = new EpicController(
             epicRepository, userRepository, teamRepository, toDoItemService, new TaskManagerAntiCorruptionLayer(
-            userRepository, null, projectRepository, epicRepository));
+            userRepository, null, projectRepository, epicRepository, null));
     private final ArgumentCaptor<Epic> epicCaptor = ArgumentCaptor.forClass(Epic.class);
 
     @Test

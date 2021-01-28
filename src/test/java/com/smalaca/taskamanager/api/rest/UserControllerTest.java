@@ -32,7 +32,7 @@ class UserControllerTest {
     private static final String TEAM_ROLE = DEVELOPER.name();
 
     private final InMemoryUserRepository userRepository = new InMemoryUserRepository();
-    private final UserController controller = new UserController(userRepository, new TaskManagerAntiCorruptionLayer(userRepository, null, null, null));
+    private final UserController controller = new UserController(userRepository, new TaskManagerAntiCorruptionLayer(userRepository, null, null, null, null));
 
     @Test
     void shouldReturnAllUsers() {

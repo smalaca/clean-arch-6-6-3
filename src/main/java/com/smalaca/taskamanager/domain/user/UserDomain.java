@@ -3,15 +3,35 @@ package com.smalaca.taskamanager.domain.user;
 import com.smalaca.taskamanager.domain.owner.OwnerDomain;
 import com.smalaca.taskamanager.domain.phonenumber.PhoneNumber;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import static com.smalaca.taskamanager.domain.owner.OwnerDomain.Builder.owner;
 
+@Entity
+@Table(name = "USER")
 public class UserDomain {
-    private final String login;
-    private final String password;
-    private final UserName userName;
-    private final TeamRole teamRole;
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String login;
+    private String password;
+
+    @Embedded
+    private UserName userName;
+
+    @Enumerated(EnumType.STRING)
+    private TeamRole teamRole;
     private String emailAddress;
+    @Embedded
     private PhoneNumber phoneNumber;
+
+    private UserDomain() {}
 
     UserDomain(String login, String password, UserName userName, TeamRole teamRole) {
         this.login = login;
