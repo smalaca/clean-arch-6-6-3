@@ -4,6 +4,7 @@ package com.smalaca.taskamanager.api.rest;
 import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.application.epic.EpicApplicationService;
 import com.smalaca.taskamanager.application.epic.EpicApplicationServiceFactory;
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.AssigneeDto;
 import com.smalaca.taskamanager.dto.EpicDto;
@@ -56,12 +57,12 @@ public class EpicController {
 
     public EpicController(
             EpicRepository epicRepository, UserRepository userRepository, TeamRepository teamRepository,
-            ToDoItemService toDoItemService, TaskManagerAntiCorruptionLayer antiCorruptionLayer) {
+            ToDoItemService toDoItemService, TaskManagerAntiCorruptionLayer antiCorruptionLayer, UserDomainRepository userDomainRepository) {
         this.epicRepository = epicRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.toDoItemService = toDoItemService;
-        epicApplicationService = new EpicApplicationServiceFactory().epicApplicationService(antiCorruptionLayer, antiCorruptionLayer, antiCorruptionLayer);
+        epicApplicationService = new EpicApplicationServiceFactory().epicApplicationService(antiCorruptionLayer, antiCorruptionLayer, userDomainRepository);
     }
 
     @Transactional

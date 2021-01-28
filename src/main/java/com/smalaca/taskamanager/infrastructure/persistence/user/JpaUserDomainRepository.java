@@ -5,7 +5,7 @@ import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class JpaUserDomainRepository implements UserDomainRepository {
+class JpaUserDomainRepository implements UserDomainRepository {
     private final SpringDataUserDomainRepository repository;
 
     JpaUserDomainRepository(SpringDataUserDomainRepository repository) {

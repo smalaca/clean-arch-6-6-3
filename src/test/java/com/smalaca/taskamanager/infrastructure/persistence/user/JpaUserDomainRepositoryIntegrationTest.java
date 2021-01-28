@@ -1,8 +1,8 @@
 package com.smalaca.taskamanager.infrastructure.persistence.user;
 
-import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainDto;
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomainTestFactory;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.repository.UserRepository;
@@ -27,7 +27,7 @@ class JpaUserDomainRepositoryIntegrationTest {
     private static final String PHONE_PREFIX = "123";
     private static final String PHONE_NUMBER = "1234567";
 
-    @Autowired private TaskManagerAntiCorruptionLayer antiCorruptionLayer;
+    @Autowired private UserDomainRepository userDomainRepository;
     @Autowired private UserRepository userRepository;
 
     private Long id;
@@ -41,7 +41,7 @@ class JpaUserDomainRepositoryIntegrationTest {
 
     @Test
     void shouldRecognizeUserWithGivenFirstAndLastNameDoesNotExist() {
-        boolean actual = antiCorruptionLayer.doesUserNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME);
+        boolean actual = userDomainRepository.doesUserNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME);
         Optional<User> verification = userRepository.findByUserNameFirstNameAndUserNameLastName(FIRST_NAME, LAST_NAME);
 
         assertThat(actual).isTrue();
@@ -52,7 +52,7 @@ class JpaUserDomainRepositoryIntegrationTest {
     void shouldRecognizeUserWithGivenFirstAndLastNameExists() {
         givenExistingUser();
 
-        boolean actual = antiCorruptionLayer.doesUserNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME);
+        boolean actual = userDomainRepository.doesUserNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME);
         User verification = userRepository.findByUserNameFirstNameAndUserNameLastName(FIRST_NAME, LAST_NAME).get();
 
         assertThat(actual).isFalse();
@@ -64,7 +64,7 @@ class JpaUserDomainRepositoryIntegrationTest {
     void shouldRecognizeUserWithGivenIdDoesNotExist() {
         long id = RandomUtils.nextLong();
 
-        boolean actual = antiCorruptionLayer.existsUserById(id);
+        boolean actual = userDomainRepository.existsUserById(id);
         Optional<User> verification = userRepository.findById(id);
 
         assertThat(actual).isFalse();
@@ -75,7 +75,7 @@ class JpaUserDomainRepositoryIntegrationTest {
     void shouldRecognizeUserWithGivenIdExists() {
         givenExistingUser();
 
-        boolean actual = antiCorruptionLayer.existsUserById(id);
+        boolean actual = userDomainRepository.existsUserById(id);
         User verification = userRepository.findById(id).get();
 
         assertThat(actual).isTrue();
@@ -91,7 +91,7 @@ class JpaUserDomainRepositoryIntegrationTest {
     void shouldFindUserById() {
         givenExistingUserWithContactDetails();
 
-        UserDomainDto actual = antiCorruptionLayer.findUserById(id).asDto();
+        UserDomainDto actual = userDomainRepository.findUserById(id).asDto();
         User verification = userRepository.findById(id).get();
 
         assertThat(actual.getLogin()).isEqualTo(LOGIN);
@@ -118,6 +118,6 @@ class JpaUserDomainRepositoryIntegrationTest {
     }
 
     private void save(UserDomain user) {
-        id = antiCorruptionLayer.saveUser(user);
+        id = userDomainRepository.saveUser(user);
     }
 }
