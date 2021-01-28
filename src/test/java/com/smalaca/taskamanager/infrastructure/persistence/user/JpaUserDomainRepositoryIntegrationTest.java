@@ -4,12 +4,15 @@ import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLay
 import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainDto;
 import com.smalaca.taskamanager.domain.user.UserDomainTestFactory;
+import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.repository.UserRepository;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,8 +42,10 @@ class JpaUserDomainRepositoryIntegrationTest {
     @Test
     void shouldRecognizeUserWithGivenFirstAndLastNameDoesNotExist() {
         boolean actual = antiCorruptionLayer.doesUserNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME);
+        Optional<User> verification = userRepository.findByUserNameFirstNameAndUserNameLastName(FIRST_NAME, LAST_NAME);
 
-        assertThat(actual).isEqualTo(true);
+        assertThat(actual).isTrue();
+        assertThat(verification).isEmpty();
     }
 
     @Test
@@ -48,15 +53,22 @@ class JpaUserDomainRepositoryIntegrationTest {
         givenExistingUser();
 
         boolean actual = antiCorruptionLayer.doesUserNotExistsByFirstAndLastName(FIRST_NAME, LAST_NAME);
+        User verification = userRepository.findByUserNameFirstNameAndUserNameLastName(FIRST_NAME, LAST_NAME).get();
 
-        assertThat(actual).isEqualTo(false);
+        assertThat(actual).isFalse();
+        assertThat(verification.getUserName().getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(verification.getUserName().getLastName()).isEqualTo(LAST_NAME);
     }
 
     @Test
     void shouldRecognizeUserWithGivenIdDoesNotExist() {
-        boolean actual = antiCorruptionLayer.existsUserById(RandomUtils.nextLong());
+        long id = RandomUtils.nextLong();
+
+        boolean actual = antiCorruptionLayer.existsUserById(id);
+        Optional<User> verification = userRepository.findById(id);
 
         assertThat(actual).isFalse();
+        assertThat(verification).isEmpty();
     }
 
     @Test
@@ -64,8 +76,11 @@ class JpaUserDomainRepositoryIntegrationTest {
         givenExistingUser();
 
         boolean actual = antiCorruptionLayer.existsUserById(id);
+        User verification = userRepository.findById(id).get();
 
         assertThat(actual).isTrue();
+        assertThat(verification.getUserName().getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(verification.getUserName().getLastName()).isEqualTo(LAST_NAME);
     }
 
     private void givenExistingUser() {
@@ -76,16 +91,26 @@ class JpaUserDomainRepositoryIntegrationTest {
     void shouldFindUserById() {
         givenExistingUserWithContactDetails();
 
-        UserDomainDto user = antiCorruptionLayer.findUserById(id).asDto();
+        UserDomainDto actual = antiCorruptionLayer.findUserById(id).asDto();
+        User verification = userRepository.findById(id).get();
 
-        assertThat(user.getLogin()).isEqualTo(LOGIN);
-        assertThat(user.getPassword()).isEqualTo(PASSWORD);
-        assertThat(user.getFirstName()).isEqualTo(FIRST_NAME);
-        assertThat(user.getLastName()).isEqualTo(LAST_NAME);
-        assertThat(user.getTeamRole()).isEqualTo(TEAM_ROLE);
-        assertThat(user.getEmailAddress()).isEqualTo(EMAIL_ADDRESS);
-        assertThat(user.getPhoneNumber()).isEqualTo(PHONE_NUMBER);
-        assertThat(user.getPhonePrefix()).isEqualTo(PHONE_PREFIX);
+        assertThat(actual.getLogin()).isEqualTo(LOGIN);
+        assertThat(actual.getPassword()).isEqualTo(PASSWORD);
+        assertThat(actual.getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(actual.getLastName()).isEqualTo(LAST_NAME);
+        assertThat(actual.getTeamRole()).isEqualTo(TEAM_ROLE);
+        assertThat(actual.getEmailAddress()).isEqualTo(EMAIL_ADDRESS);
+        assertThat(actual.getPhoneNumber()).isEqualTo(PHONE_NUMBER);
+        assertThat(actual.getPhonePrefix()).isEqualTo(PHONE_PREFIX);
+
+        assertThat(verification.getLogin()).isEqualTo(LOGIN);
+        assertThat(verification.getPassword()).isEqualTo(PASSWORD);
+        assertThat(verification.getUserName().getFirstName()).isEqualTo(FIRST_NAME);
+        assertThat(verification.getUserName().getLastName()).isEqualTo(LAST_NAME);
+        assertThat(verification.getTeamRole().name()).isEqualTo(TEAM_ROLE);
+        assertThat(verification.getEmailAddress().getEmailAddress()).isEqualTo(EMAIL_ADDRESS);
+        assertThat(verification.getPhoneNumber().getNumber()).isEqualTo(PHONE_NUMBER);
+        assertThat(verification.getPhoneNumber().getPrefix()).isEqualTo(PHONE_PREFIX);
     }
 
     private void givenExistingUserWithContactDetails() {
