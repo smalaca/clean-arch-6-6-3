@@ -2,9 +2,9 @@ package com.smalaca.taskamanager.api.rest;
 
 
 import com.google.common.collect.Iterables;
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.application.team.TeamApplicationService;
 import com.smalaca.taskamanager.application.team.TeamApplicationServiceFactory;
-import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.team.TeamException;
 import com.smalaca.taskamanager.dto.TeamDto;
 import com.smalaca.taskamanager.dto.TeamMembersDto;
@@ -42,7 +42,7 @@ public class TeamController {
     private final UserRepository userRepository;
     private final TeamApplicationService teamApplicationService;
 
-    public TeamController(TeamRepository teamRepository, UserRepository userRepository, TeamDomainRepository teamDomainRepository) {
+    public TeamController(TeamRepository teamRepository, UserRepository userRepository, TaskManagerAntiCorruptionLayer teamDomainRepository) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
         teamApplicationService = new TeamApplicationServiceFactory().teamApplicationService(teamDomainRepository);

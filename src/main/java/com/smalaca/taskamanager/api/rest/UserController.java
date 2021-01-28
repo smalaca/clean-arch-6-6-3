@@ -38,7 +38,7 @@ public class UserController {
     @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
-        userApplicationService = new UserApplicationService(new TaskManagerAntiCorruptionLayer(null, userRepository, null, null, null));
+        userApplicationService = new UserApplicationService(new TaskManagerAntiCorruptionLayer(null, userRepository, null, null, null, null));
     }
 
     @GetMapping

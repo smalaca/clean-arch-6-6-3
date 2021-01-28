@@ -31,7 +31,7 @@ class TeamControllerTest {
     private final InMemoryTeamRepository teamRepository = new InMemoryTeamRepository();
 
     private final TeamController controller = new TeamController(
-            teamRepository, userRepository, new TaskManagerAntiCorruptionLayer(teamRepository, null, null, null, null));
+            teamRepository, userRepository, new TaskManagerAntiCorruptionLayer(teamRepository, null, null, null, null, null));
 
     @Test
     void shouldReturnAllTeams() {

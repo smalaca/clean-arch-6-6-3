@@ -1,7 +1,20 @@
 package com.smalaca.taskamanager.domain.team;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "TEAM")
 public class TeamDomain {
-    private final String name;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String name;
+
+    private TeamDomain() {}
 
     TeamDomain(String name) {
         this.name = name;

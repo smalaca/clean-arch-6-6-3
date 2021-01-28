@@ -14,6 +14,7 @@ import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainDto;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
+import com.smalaca.taskamanager.infrastructure.persistence.team.JpaTeamDomainRepository;
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
 import com.smalaca.taskamanager.model.embedded.Owner;
 import com.smalaca.taskamanager.model.embedded.PhoneNumber;
@@ -40,15 +41,17 @@ public class TaskManagerAntiCorruptionLayer implements
     private final ProductOwnerRepository productOwnerRepository;
     private final ProjectRepository projectRepository;
     private final EpicRepository epicRepository;
+    private final JpaTeamDomainRepository teamDomainRepository;
 
     public TaskManagerAntiCorruptionLayer(
             TeamRepository teamRepository, UserRepository userRepository, ProductOwnerRepository productOwnerRepository,
-            ProjectRepository projectRepository, EpicRepository epicRepository) {
+            ProjectRepository projectRepository, EpicRepository epicRepository, JpaTeamDomainRepository teamDomainRepository) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
         this.epicRepository = epicRepository;
+        this.teamDomainRepository = teamDomainRepository;
     }
 
     @Override
