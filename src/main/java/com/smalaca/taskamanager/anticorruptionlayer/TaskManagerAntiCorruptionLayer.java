@@ -8,9 +8,6 @@ import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository
 import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomainDto;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
-import com.smalaca.taskamanager.domain.team.TeamDomain;
-import com.smalaca.taskamanager.domain.team.TeamDomainDto;
-import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainDto;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
@@ -21,45 +18,28 @@ import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
 import com.smalaca.taskamanager.model.entities.Project;
-import com.smalaca.taskamanager.model.entities.Team;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
-import com.smalaca.taskamanager.repository.TeamRepository;
 import com.smalaca.taskamanager.repository.UserRepository;
+import org.springframework.stereotype.Component;
 
-public class TaskManagerAntiCorruptionLayer implements
-        TeamDomainRepository, UserDomainRepository, ProductOwnerDomainRepository, ProjectDomainRepository, EpicDomainRepository {
-    private final TeamRepository teamRepository;
+@Component
+public class TaskManagerAntiCorruptionLayer implements UserDomainRepository, ProductOwnerDomainRepository, ProjectDomainRepository, EpicDomainRepository {
     private final UserRepository userRepository;
     private final ProductOwnerRepository productOwnerRepository;
     private final ProjectRepository projectRepository;
     private final EpicRepository epicRepository;
 
     public TaskManagerAntiCorruptionLayer(
-            TeamRepository teamRepository, UserRepository userRepository, ProductOwnerRepository productOwnerRepository,
-            ProjectRepository projectRepository, EpicRepository epicRepository) {
-        this.teamRepository = teamRepository;
+            UserRepository userRepository, ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository, EpicRepository epicRepository) {
         this.userRepository = userRepository;
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
         this.epicRepository = epicRepository;
-    }
-
-    @Override
-    public Long saveTeam(TeamDomain teamDomain) {
-        TeamDomainDto dto = teamDomain.asDto();
-        Team team = new Team();
-        team.setName(dto.getName());
-        return teamRepository.save(team).getId();
-    }
-
-    @Override
-    public boolean doesTeamNotExistByName(String name) {
-        return teamRepository.findByName(name).isEmpty();
     }
 
     @Override

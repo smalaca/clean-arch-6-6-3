@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface TeamRepository extends CrudRepository<Team, Long> {
+    @Deprecated
     Optional<Team> findByName(String name);
 }

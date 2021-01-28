@@ -63,7 +63,7 @@ public class EpicController {
         this.teamRepository = teamRepository;
         this.toDoItemService = toDoItemService;
         TaskManagerAntiCorruptionLayer antiCorruptionLayer = new TaskManagerAntiCorruptionLayer(
-                teamRepository, userRepository, null, projectRepository, epicRepository);
+                userRepository, null, projectRepository, epicRepository);
         epicApplicationService = new EpicApplicationServiceFactory().epicApplicationService(antiCorruptionLayer, antiCorruptionLayer, antiCorruptionLayer);
     }
 

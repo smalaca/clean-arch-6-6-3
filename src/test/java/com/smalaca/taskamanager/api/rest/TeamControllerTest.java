@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.dto.TeamDto;
 import com.smalaca.taskamanager.dto.TeamMembersDto;
 import com.smalaca.taskamanager.model.entities.User;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -27,8 +29,10 @@ class TeamControllerTest {
     private static final Long NOT_EXISTING_USER_ID = 113L;
 
     private final InMemoryUserRepository userRepository = new InMemoryUserRepository();
+    private final InMemoryTeamRepository teamRepository = new InMemoryTeamRepository();
+    private final TeamDomainRepository teamDomainRepository = mock(TeamDomainRepository.class);
 
-    private final TeamController controller = new TeamController(new InMemoryTeamRepository(), userRepository);
+    private final TeamController controller = new TeamController(teamRepository, userRepository, teamDomainRepository);
 
     @Test
     void shouldReturnAllTeams() {
