@@ -25,7 +25,6 @@ import com.smalaca.taskamanager.model.entities.Team;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.repository.EpicRepository;
-import com.smalaca.taskamanager.repository.ProjectRepository;
 import com.smalaca.taskamanager.repository.TeamRepository;
 import com.smalaca.taskamanager.repository.UserRepository;
 import com.smalaca.taskamanager.service.ToDoItemService;
@@ -57,13 +56,11 @@ public class EpicController {
 
     public EpicController(
             EpicRepository epicRepository, UserRepository userRepository, TeamRepository teamRepository,
-            ProjectRepository projectRepository, ToDoItemService toDoItemService) {
+            ToDoItemService toDoItemService, TaskManagerAntiCorruptionLayer antiCorruptionLayer) {
         this.epicRepository = epicRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.toDoItemService = toDoItemService;
-        TaskManagerAntiCorruptionLayer antiCorruptionLayer = new TaskManagerAntiCorruptionLayer(
-                userRepository, null, projectRepository, epicRepository);
         epicApplicationService = new EpicApplicationServiceFactory().epicApplicationService(antiCorruptionLayer, antiCorruptionLayer, antiCorruptionLayer);
     }
 

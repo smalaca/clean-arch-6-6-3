@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.dto.AssigneeDto;
 import com.smalaca.taskamanager.dto.EpicDto;
 import com.smalaca.taskamanager.dto.StakeholderDto;
@@ -67,7 +68,8 @@ class EpicControllerTest {
     private final ProjectRepository projectRepository = mock(ProjectRepository.class);
     private final ToDoItemService toDoItemService = mock(ToDoItemService.class);
     private final EpicController controller = new EpicController(
-            epicRepository, userRepository, teamRepository, projectRepository, toDoItemService);
+            epicRepository, userRepository, teamRepository, toDoItemService, new TaskManagerAntiCorruptionLayer(
+            userRepository, null, projectRepository, epicRepository));
     private final ArgumentCaptor<Epic> epicCaptor = ArgumentCaptor.forClass(Epic.class);
 
     @Test

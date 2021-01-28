@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.dto.UserDto;
 import com.smalaca.taskamanager.model.enums.TeamRole;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,8 @@ class UserControllerTest {
     private static final String PASSWORD = "somethingExtremelyConfidential";
     private static final String TEAM_ROLE = DEVELOPER.name();
 
-    private final UserController controller = new UserController(new InMemoryUserRepository());
+    private final InMemoryUserRepository userRepository = new InMemoryUserRepository();
+    private final UserController controller = new UserController(userRepository, new TaskManagerAntiCorruptionLayer(userRepository, null, null, null));
 
     @Test
     void shouldReturnAllUsers() {
