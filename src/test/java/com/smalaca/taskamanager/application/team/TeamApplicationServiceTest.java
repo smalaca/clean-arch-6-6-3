@@ -1,8 +1,8 @@
 package com.smalaca.taskamanager.application.team;
 
+import com.smalaca.taskamanager.domain.team.TeamDomain;
 import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.team.TeamException;
-import com.smalaca.taskamanager.model.entities.Team;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -22,7 +22,7 @@ class TeamApplicationServiceTest {
 
     @Test
     void shouldCreateTeam() {
-        ArgumentCaptor<Team> captor = ArgumentCaptor.forClass(Team.class);
+        ArgumentCaptor<TeamDomain> captor = ArgumentCaptor.forClass(TeamDomain.class);
         givenNonExistingTeam();
         givenSavedTeam();
 
@@ -30,7 +30,7 @@ class TeamApplicationServiceTest {
 
         assertThat(id).isEqualTo(TEAM_ID);
         then(repository).should().saveTeam(captor.capture());
-        assertThat(captor.getValue().getName()).isEqualTo(TEAM_NAME);
+        assertThat(captor.getValue().asDto().getName()).isEqualTo(TEAM_NAME);
     }
 
     private void givenNonExistingTeam() {
