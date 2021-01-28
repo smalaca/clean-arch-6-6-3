@@ -8,79 +8,28 @@ import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository
 import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomainDto;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
-import com.smalaca.taskamanager.domain.user.UserDomain;
-import com.smalaca.taskamanager.domain.user.UserDomainDto;
-import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
 import com.smalaca.taskamanager.model.embedded.Owner;
 import com.smalaca.taskamanager.model.embedded.PhoneNumber;
-import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
 import com.smalaca.taskamanager.model.entities.Project;
-import com.smalaca.taskamanager.model.entities.User;
-import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
-import com.smalaca.taskamanager.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskManagerAntiCorruptionLayer implements UserDomainRepository, ProductOwnerDomainRepository, ProjectDomainRepository, EpicDomainRepository {
-    private final UserRepository userRepository;
+public class TaskManagerAntiCorruptionLayer implements ProductOwnerDomainRepository, ProjectDomainRepository, EpicDomainRepository {
     private final ProductOwnerRepository productOwnerRepository;
     private final ProjectRepository projectRepository;
     private final EpicRepository epicRepository;
 
-    public TaskManagerAntiCorruptionLayer(
-            UserRepository userRepository, ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository, EpicRepository epicRepository) {
-        this.userRepository = userRepository;
+    public TaskManagerAntiCorruptionLayer(ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository, EpicRepository epicRepository) {
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
         this.epicRepository = epicRepository;
-    }
-
-    @Override
-    public Long saveUser(UserDomain userDomain) {
-        UserDomainDto userDomainDto = userDomain.asDto();
-        User user = new User();
-        user.setLogin(userDomainDto.getLogin());
-        user.setPassword(userDomainDto.getPassword());
-        user.setTeamRole(TeamRole.valueOf(userDomainDto.getTeamRole()));
-        UserName userName = new UserName();
-        userName.setFirstName(userDomainDto.getFirstName());
-        userName.setLastName(userDomainDto.getLastName());
-        user.setUserName(userName);
-
-        return userRepository.save(user).getId();
-    }
-
-    @Override
-    public boolean doesUserNotExistsByFirstAndLastName(String firstName, String lastName) {
-        return userRepository.findByUserNameFirstNameAndUserNameLastName(firstName, lastName).isEmpty();
-    }
-
-    @Override
-    public boolean existsUserById(Long id) {
-        return userRepository.findById(id).isPresent();
-    }
-
-    @Override
-    public UserDomain findUserById(Long id) {
-        User user = userRepository.findById(id).get();
-        UserDomainDto dto = UserDomainDto.builder()
-                .login(user.getLogin())
-                .password(user.getPassword())
-                .teamRole(user.getTeamRole().name())
-                .firstName(user.getUserName().getFirstName())
-                .lastName(user.getUserName().getLastName())
-                .emailAddress(user.getEmailAddress().getEmailAddress())
-                .phoneNumber(user.getPhoneNumber().getNumber())
-                .phonePrefix(user.getPhoneNumber().getPrefix())
-                .build();
-        return new UserDomain(dto);
     }
 
     @Override

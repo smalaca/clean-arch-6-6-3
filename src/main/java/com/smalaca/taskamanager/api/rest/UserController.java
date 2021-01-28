@@ -1,7 +1,7 @@
 package com.smalaca.taskamanager.api.rest;
 
-import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.application.user.UserApplicationService;
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserException;
 import com.smalaca.taskamanager.dto.UserDto;
 import com.smalaca.taskamanager.exception.UserNotFoundException;
@@ -36,9 +36,9 @@ public class UserController {
     private final UserApplicationService userApplicationService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, UserDomainRepository userDomainRepository) {
         this.userRepository = userRepository;
-        userApplicationService = new UserApplicationService(new TaskManagerAntiCorruptionLayer(userRepository, null, null, null));
+        userApplicationService = new UserApplicationService(userDomainRepository);
     }
 
     @GetMapping

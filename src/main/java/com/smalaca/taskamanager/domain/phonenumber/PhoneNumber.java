@@ -1,8 +1,16 @@
 package com.smalaca.taskamanager.domain.phonenumber;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class PhoneNumber {
-    private final String prefix;
-    private final String number;
+    @Column(name = "phone_prefix")
+    private String prefix;
+    @Column(name = "phone_number")
+    private String number;
+
+    private PhoneNumber() {}
 
     public PhoneNumber(String prefix, String number) {
         this.prefix = prefix;

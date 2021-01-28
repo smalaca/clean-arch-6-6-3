@@ -3,15 +3,35 @@ package com.smalaca.taskamanager.domain.user;
 import com.smalaca.taskamanager.domain.owner.OwnerDomain;
 import com.smalaca.taskamanager.domain.phonenumber.PhoneNumber;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import static com.smalaca.taskamanager.domain.owner.OwnerDomain.Builder.owner;
 
+@Entity
+@Table(name = "USER")
 public class UserDomain {
-    private final String login;
-    private final String password;
-    private final UserName userName;
-    private final TeamRole teamRole;
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String login;
+    private String password;
+
+    @Embedded
+    private UserName userName;
+
+    @Enumerated(EnumType.STRING)
+    private TeamRole teamRole;
     private String emailAddress;
+    @Embedded
     private PhoneNumber phoneNumber;
+
+    private UserDomain() {}
 
     UserDomain(String login, String password, UserName userName, TeamRole teamRole) {
         this.login = login;
@@ -30,16 +50,24 @@ public class UserDomain {
     }
 
     public UserDomainDto asDto() {
-        return UserDomainDto.builder()
+        UserDomainDto.UserDomainDtoBuilder builder = UserDomainDto.builder()
                 .login(login)
                 .password(password)
                 .teamRole(teamRole.name())
                 .firstName(userName.getFirstName())
-                .lastName(userName.getLastName())
-                .emailAddress(emailAddress)
-                .phoneNumber(phoneNumber.getNumber())
-                .phonePrefix(phoneNumber.getPrefix())
-                .build();
+                .lastName(userName.getLastName());
+
+        if (hasEmailAddress()) {
+            builder.emailAddress(emailAddress);
+        }
+
+        if (hasPhoneNumber()) {
+            builder
+                    .phoneNumber(phoneNumber.getNumber())
+                    .phonePrefix(phoneNumber.getPrefix());
+        }
+
+        return builder.build();
     }
 
     public OwnerDomain asOwner() {
@@ -62,5 +90,9 @@ public class UserDomain {
 
     private boolean hasEmailAddress() {
         return emailAddress != null;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

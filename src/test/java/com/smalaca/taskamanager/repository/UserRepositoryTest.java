@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -22,15 +21,6 @@ class UserRepositoryTest {
     @AfterEach
     void tearDown() {
         repository.deleteAll();
-    }
-
-    @Test
-    void shouldFindNoUserWhenUserNotExist() {
-        repository.saveAll(asList(user("Peter", "Parker"), user("Tony", "Stark"), user("Steve", "Rogers")));
-
-        Optional<User> actual = repository.findByUserNameFirstNameAndUserNameLastName("Natasha", "Romanow");
-
-        assertThat(actual.isEmpty()).isTrue();
     }
 
     @Test
@@ -51,16 +41,6 @@ class UserRepositoryTest {
             assertThat(actual.getUserName().getFirstName()).isEqualTo(firstName);
             assertThat(actual.getUserName().getLastName()).isEqualTo(lastName);
         };
-    }
-
-    @Test
-    void shouldFindUserByFirstAndLastName() {
-        repository.saveAll(asList(user("Peter", "Parker"), user("Tony", "Stark"), user("Steve", "Rogers")));
-
-        User actual = repository.findByUserNameFirstNameAndUserNameLastName("Peter", "Parker").get();
-
-        assertThat(actual.getUserName().getFirstName()).isEqualTo("Peter");
-        assertThat(actual.getUserName().getLastName()).isEqualTo("Parker");
     }
 
     private User user(String firstName, String lastName) {

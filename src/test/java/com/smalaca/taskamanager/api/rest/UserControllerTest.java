@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.domain.user.UserDomainRepository;
 import com.smalaca.taskamanager.dto.UserDto;
 import com.smalaca.taskamanager.model.enums.TeamRole;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import static com.smalaca.taskamanager.model.enums.TeamRole.BUSINESS_ANALYSIS;
 import static com.smalaca.taskamanager.model.enums.TeamRole.DEVELOPER;
 import static com.smalaca.taskamanager.model.enums.TeamRole.TESTER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -30,7 +32,9 @@ class UserControllerTest {
     private static final String PASSWORD = "somethingExtremelyConfidential";
     private static final String TEAM_ROLE = DEVELOPER.name();
 
-    private final UserController controller = new UserController(new InMemoryUserRepository());
+    private final InMemoryUserRepository userRepository = new InMemoryUserRepository();
+    private final UserDomainRepository userDomainRepository = mock(UserDomainRepository.class);
+    private final UserController controller = new UserController(userRepository, userDomainRepository);
 
     @Test
     void shouldReturnAllUsers() {

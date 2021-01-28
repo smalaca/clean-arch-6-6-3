@@ -1,8 +1,13 @@
 package com.smalaca.taskamanager.domain.user;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 class UserName {
-    private final String firstName;
-    private final String lastName;
+    private String firstName;
+    private String lastName;
+
+    private UserName() {}
 
     UserName(String firstName, String lastName) {
         this.firstName = firstName;
