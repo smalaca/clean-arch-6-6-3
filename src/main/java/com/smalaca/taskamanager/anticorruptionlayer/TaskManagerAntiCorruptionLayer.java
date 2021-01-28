@@ -9,7 +9,6 @@ import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomainDto;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
 import com.smalaca.taskamanager.domain.team.TeamDomain;
-import com.smalaca.taskamanager.domain.team.TeamDomainDto;
 import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainDto;
@@ -22,7 +21,6 @@ import com.smalaca.taskamanager.model.embedded.UserName;
 import com.smalaca.taskamanager.model.entities.Epic;
 import com.smalaca.taskamanager.model.entities.ProductOwner;
 import com.smalaca.taskamanager.model.entities.Project;
-import com.smalaca.taskamanager.model.entities.Team;
 import com.smalaca.taskamanager.model.entities.User;
 import com.smalaca.taskamanager.model.enums.TeamRole;
 import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
@@ -56,15 +54,12 @@ public class TaskManagerAntiCorruptionLayer implements
 
     @Override
     public Long saveTeam(TeamDomain teamDomain) {
-        TeamDomainDto dto = teamDomain.asDto();
-        Team team = new Team();
-        team.setName(dto.getName());
-        return teamRepository.save(team).getId();
+        return teamDomainRepository.saveTeam(teamDomain);
     }
 
     @Override
     public boolean doesTeamNotExistByName(String name) {
-        return teamRepository.findByName(name).isEmpty();
+        return teamDomainRepository.doesTeamNotExistByName(name);
     }
 
     @Override

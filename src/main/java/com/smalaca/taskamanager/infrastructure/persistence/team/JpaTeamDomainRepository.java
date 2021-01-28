@@ -14,11 +14,11 @@ public class JpaTeamDomainRepository implements TeamDomainRepository {
 
     @Override
     public Long saveTeam(TeamDomain team) {
-        return null;
+        return repository.save(team).getId();
     }
 
     @Override
     public boolean doesTeamNotExistByName(String name) {
-        return false;
+        return !repository.existsByName(name);
     }
 }

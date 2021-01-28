@@ -25,4 +25,8 @@ public class TeamDomain {
                 .name(name)
                 .build();
     }
+
+    public Long getId() {
+        return id;
+    }
 }

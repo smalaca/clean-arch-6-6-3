@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 interface SpringDataTeamDomainRepository extends CrudRepository<TeamDomain, Long> {
+    boolean existsByName(String name);
 }
