@@ -30,16 +30,24 @@ public class UserDomain {
     }
 
     public UserDomainDto asDto() {
-        return UserDomainDto.builder()
+        UserDomainDto.UserDomainDtoBuilder builder = UserDomainDto.builder()
                 .login(login)
                 .password(password)
                 .teamRole(teamRole.name())
                 .firstName(userName.getFirstName())
-                .lastName(userName.getLastName())
-                .emailAddress(emailAddress)
-                .phoneNumber(phoneNumber.getNumber())
-                .phonePrefix(phoneNumber.getPrefix())
-                .build();
+                .lastName(userName.getLastName());
+
+        if (hasEmailAddress()) {
+            builder.emailAddress(emailAddress);
+        }
+
+        if (hasPhoneNumber()) {
+            builder
+                    .phoneNumber(phoneNumber.getNumber())
+                    .phonePrefix(phoneNumber.getPrefix());
+        }
+
+        return builder.build();
     }
 
     public OwnerDomain asOwner() {

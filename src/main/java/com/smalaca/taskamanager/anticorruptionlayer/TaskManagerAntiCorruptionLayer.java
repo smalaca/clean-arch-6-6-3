@@ -53,6 +53,13 @@ public class TaskManagerAntiCorruptionLayer implements UserDomainRepository, Pro
         userName.setFirstName(userDomainDto.getFirstName());
         userName.setLastName(userDomainDto.getLastName());
         user.setUserName(userName);
+        PhoneNumber phoneNumber = new PhoneNumber();
+        phoneNumber.setPrefix(userDomainDto.getPhonePrefix());
+        phoneNumber.setNumber(userDomainDto.getPhoneNumber());
+        user.setPhoneNumber(phoneNumber);
+        EmailAddress emailAddress = new EmailAddress();
+        emailAddress.setEmailAddress(userDomainDto.getEmailAddress());
+        user.setEmailAddress(emailAddress);
 
         return userRepository.save(user).getId();
     }
