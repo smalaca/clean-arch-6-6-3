@@ -8,6 +8,8 @@ import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository
 import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomainDto;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
+import com.smalaca.taskamanager.domain.team.TeamDomain;
+import com.smalaca.taskamanager.domain.team.TeamDomainDto;
 import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainDto;
@@ -48,7 +50,10 @@ public class TaskManagerAntiCorruptionLayer implements
     }
 
     @Override
-    public Long saveTeam(Team team) {
+    public Long saveTeam(TeamDomain teamDomain) {
+        TeamDomainDto dto = teamDomain.asDto();
+        Team team = new Team();
+        team.setName(dto.getName());
         return teamRepository.save(team).getId();
     }
 

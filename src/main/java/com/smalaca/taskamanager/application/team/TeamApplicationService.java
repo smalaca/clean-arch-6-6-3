@@ -1,8 +1,8 @@
 package com.smalaca.taskamanager.application.team;
 
+import com.smalaca.taskamanager.domain.team.TeamDomain;
 import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.team.TeamFactory;
-import com.smalaca.taskamanager.model.entities.Team;
 
 public class TeamApplicationService {
     private final TeamDomainRepository teamRepository;
@@ -14,7 +14,7 @@ public class TeamApplicationService {
     }
 
     public Long create(String name) {
-        Team team = teamFactory.create(name);
+        TeamDomain team = teamFactory.create(name);
 
         return teamRepository.saveTeam(team);
     }
