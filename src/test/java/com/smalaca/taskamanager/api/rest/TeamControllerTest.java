@@ -1,5 +1,6 @@
 package com.smalaca.taskamanager.api.rest;
 
+import com.smalaca.taskamanager.anticorruptionlayer.TaskManagerAntiCorruptionLayer;
 import com.smalaca.taskamanager.dto.TeamDto;
 import com.smalaca.taskamanager.dto.TeamMembersDto;
 import com.smalaca.taskamanager.model.entities.User;
@@ -27,8 +28,10 @@ class TeamControllerTest {
     private static final Long NOT_EXISTING_USER_ID = 113L;
 
     private final InMemoryUserRepository userRepository = new InMemoryUserRepository();
+    private final InMemoryTeamRepository teamRepository = new InMemoryTeamRepository();
 
-    private final TeamController controller = new TeamController(new InMemoryTeamRepository(), userRepository);
+    private final TeamController controller = new TeamController(
+            teamRepository, userRepository, new TaskManagerAntiCorruptionLayer(teamRepository, null, null, null, null));
 
     @Test
     void shouldReturnAllTeams() {

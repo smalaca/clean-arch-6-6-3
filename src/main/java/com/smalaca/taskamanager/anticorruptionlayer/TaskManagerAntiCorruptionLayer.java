@@ -30,7 +30,9 @@ import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
 import com.smalaca.taskamanager.repository.TeamRepository;
 import com.smalaca.taskamanager.repository.UserRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TaskManagerAntiCorruptionLayer implements
         TeamDomainRepository, UserDomainRepository, ProductOwnerDomainRepository, ProjectDomainRepository, EpicDomainRepository {
     private final TeamRepository teamRepository;
