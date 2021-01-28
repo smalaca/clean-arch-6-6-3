@@ -5,10 +5,10 @@ import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class JpaTeamDomainRepository implements TeamDomainRepository {
+class JpaTeamDomainRepository implements TeamDomainRepository {
     private final SpringDataTeamDomainRepository repository;
 
-    public JpaTeamDomainRepository(SpringDataTeamDomainRepository repository) {
+    JpaTeamDomainRepository(SpringDataTeamDomainRepository repository) {
         this.repository = repository;
     }
 

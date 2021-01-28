@@ -30,7 +30,7 @@ class TeamApplicationServiceTest {
 
         assertThat(id).isEqualTo(TEAM_ID);
         then(repository).should().saveTeam(captor.capture());
-        assertThat(captor.getValue().asDto().getName()).isEqualTo(TEAM_NAME);
+        assertThat(captor.getValue()).hasFieldOrPropertyWithValue("name", TEAM_NAME);
     }
 
     private void givenNonExistingTeam() {

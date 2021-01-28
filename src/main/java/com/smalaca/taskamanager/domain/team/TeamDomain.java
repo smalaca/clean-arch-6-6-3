@@ -20,12 +20,6 @@ public class TeamDomain {
         this.name = name;
     }
 
-    public TeamDomainDto asDto() {
-        return TeamDomainDto.builder()
-                .name(name)
-                .build();
-    }
-
     public Long getId() {
         return id;
     }

@@ -8,12 +8,9 @@ import com.smalaca.taskamanager.domain.productowner.ProductOwnerDomainRepository
 import com.smalaca.taskamanager.domain.project.ProjectDomain;
 import com.smalaca.taskamanager.domain.project.ProjectDomainDto;
 import com.smalaca.taskamanager.domain.project.ProjectDomainRepository;
-import com.smalaca.taskamanager.domain.team.TeamDomain;
-import com.smalaca.taskamanager.domain.team.TeamDomainRepository;
 import com.smalaca.taskamanager.domain.user.UserDomain;
 import com.smalaca.taskamanager.domain.user.UserDomainDto;
 import com.smalaca.taskamanager.domain.user.UserDomainRepository;
-import com.smalaca.taskamanager.infrastructure.persistence.team.JpaTeamDomainRepository;
 import com.smalaca.taskamanager.model.embedded.EmailAddress;
 import com.smalaca.taskamanager.model.embedded.Owner;
 import com.smalaca.taskamanager.model.embedded.PhoneNumber;
@@ -27,39 +24,22 @@ import com.smalaca.taskamanager.model.enums.ToDoItemStatus;
 import com.smalaca.taskamanager.repository.EpicRepository;
 import com.smalaca.taskamanager.repository.ProductOwnerRepository;
 import com.smalaca.taskamanager.repository.ProjectRepository;
-import com.smalaca.taskamanager.repository.TeamRepository;
 import com.smalaca.taskamanager.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskManagerAntiCorruptionLayer implements
-        TeamDomainRepository, UserDomainRepository, ProductOwnerDomainRepository, ProjectDomainRepository, EpicDomainRepository {
-    private final TeamRepository teamRepository;
+public class TaskManagerAntiCorruptionLayer implements UserDomainRepository, ProductOwnerDomainRepository, ProjectDomainRepository, EpicDomainRepository {
     private final UserRepository userRepository;
     private final ProductOwnerRepository productOwnerRepository;
     private final ProjectRepository projectRepository;
     private final EpicRepository epicRepository;
-    private final JpaTeamDomainRepository teamDomainRepository;
 
     public TaskManagerAntiCorruptionLayer(
-            TeamRepository teamRepository, UserRepository userRepository, ProductOwnerRepository productOwnerRepository,
-            ProjectRepository projectRepository, EpicRepository epicRepository, JpaTeamDomainRepository teamDomainRepository) {
-        this.teamRepository = teamRepository;
+            UserRepository userRepository, ProductOwnerRepository productOwnerRepository, ProjectRepository projectRepository, EpicRepository epicRepository) {
         this.userRepository = userRepository;
         this.productOwnerRepository = productOwnerRepository;
         this.projectRepository = projectRepository;
         this.epicRepository = epicRepository;
-        this.teamDomainRepository = teamDomainRepository;
-    }
-
-    @Override
-    public Long saveTeam(TeamDomain teamDomain) {
-        return teamDomainRepository.saveTeam(teamDomain);
-    }
-
-    @Override
-    public boolean doesTeamNotExistByName(String name) {
-        return teamDomainRepository.doesTeamNotExistByName(name);
     }
 
     @Override
